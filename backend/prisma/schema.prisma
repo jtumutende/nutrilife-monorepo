@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  
+}
+
+enum Role {
+  USER
+  ADMIN
+  NUTRITIONIST
+}
+
+enum Plan {
+  Starter
+  Pro
+  Elite
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  ON_THE_WAY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id           String        @id @default(cuid())
+  firstName    String
+  lastName     String        @default("")
+  email        String        @unique
+  phone        String?       @unique
+  password     String
+  role         Role          @default(USER)
+  plan         Plan          @default(Starter)
+  goal         String?
+  age          Int?
+  weight       Float?
+  height       Float?
+  gender       String?
+  address      String?
+  dietary      String?
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  orders       Order[]
+  mealLogs     MealLog[]
+  payments     Payment[]
+  subscription Subscription?
+}
+
+model Meal {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  emoji       String      @default("🍱")
+  description String?
+  category    String
+  price       Int
+  calories    Int
+  protein     Float       @default(0)
+  carbs       Float       @default(0)
+  fat         Float       @default(0)
+  fiber       Float       @default(0)
+  isAvailable Boolean     @default(true)
+  isPopular   Boolean     @default(false)
+  imageUrl    String?
+  createdAt   DateTime    @default(now())
+  orderItems  OrderItem[]
+  mealLogs    MealLog[]
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+  totalAmount     Int
+  deliveryAddress String
+  deliveryPhone   String
+  deliveryTime    String      @default("ASAP")
+  notes           String?
+  status          OrderStatus @default(PENDING)
+  payment         Payment?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id       String @id @default(cuid())
+  orderId  String
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  mealId   String
+  meal     Meal   @relation(fields: [mealId], references: [id])
+  quantity Int
+  price    Int
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id])
+  orderId        String?       @unique
+  order          Order?        @relation(fields: [orderId], references: [id])
+  amount         Int
+  currency       String        @default("UGX")
+  pesapalTrackId String?       @unique
+  status         PaymentStatus @default(PENDING)
+  description    String?
+  createdAt      DateTime      @default(now())
+}
+
+model MealLog {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  mealId   String?
+  meal     Meal?    @relation(fields: [mealId], references: [id])
+  mealName String
+  mealType String   @default("Lunch")
+  calories Int
+  protein  Float    @default(0)
+  carbs    Float    @default(0)
+  fat      Float    @default(0)
+  notes    String?
+  loggedAt DateTime @default(now())
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  plan      Plan
+  startDate DateTime @default(now())
+  endDate   DateTime
+  isActive  Boolean  @default(true)
+}

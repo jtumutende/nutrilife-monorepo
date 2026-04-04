@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Login — NutriLife</title>
+<link rel="stylesheet" href="../css/global.css">
+<style>
+body{min-height:100vh;background:var(--dark);display:flex;flex-direction:column}
+.admin-topbar{padding:16px 32px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.admin-topbar .logo{font-family:var(--font-head);font-size:20px;font-weight:900;color:#fff;cursor:pointer}
+.admin-topbar .logo .accent{color:var(--orange)}
+.admin-topbar .sub{color:rgba(255,255,255,.4);font-size:14px}
+.center{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.abox{background:#fff;border-radius:24px;padding:48px;width:100%;max-width:420px;box-shadow:0 32px 80px rgba(0,0,0,.3);text-align:center}
+.abox-icon{font-size:52px;margin-bottom:16px}
+.abox-title{font-family:var(--font-head);font-size:28px;font-weight:900;margin-bottom:6px}
+.abox-sub{font-size:14px;color:var(--mid);margin-bottom:32px;text-align:center}
+.err-box{background:#FEE2E2;color:#991B1B;padding:11px 14px;border-radius:var(--r-sm);font-size:13px;margin-bottom:14px;display:none;text-align:left}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+<div class="admin-topbar">
+  <div class="logo" onclick="location.href='../index.html'">🥗 Nutri<span class="accent">Life</span></div>
+  <span class="sub">· Admin Portal</span>
+</div>
+<div class="center">
+  <div class="abox">
+    <div class="abox-icon">🔐</div>
+    <div class="abox-title">Admin Access</div>
+    <p class="abox-sub">Sign in to the NutriLife control panel</p>
+    <div class="err-box" id="err"></div>
+    <div class="form-group" style="text-align:left"><label>Admin Email</label><input class="form-control" type="email" id="email" placeholder="admin@nutrilife.ug" value="admin@nutrilife.ug"></div>
+    <div class="form-group" style="text-align:left"><label>Password</label><input class="form-control" type="password" id="pass" placeholder="Admin password" value="admin123"></div>
+    <button class="btn btn-dark btn-block" id="btn" onclick="doAdminLogin()" style="margin-bottom:16px">🔐 Sign In to Admin Panel</button>
+    <a onclick="location.href='../pages/login.html'" style="font-size:13px;color:var(--g800);font-weight:600;cursor:pointer">← Back to user login</a>
+  </div>
+</div>
+<script src="../js/api.js"></script>
+<script>
+if(Auth.isLoggedIn()&&Auth.isAdmin()) location.href='dashboard.html';
+async function doAdminLogin(){
+  const email=document.getElementById('email').value.trim();
+  const pass=document.getElementById('pass').value;
+  const err=document.getElementById('err');
+  const btn=document.getElementById('btn');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Please enter email and password.';err.style.display='block';return;}
+  btn.innerHTML='<span class="spinner"></span> Signing in...';btn.disabled=true;
+  try{
+    const data=await Auth.login(email,pass);
+    if(data.user.role!=='ADMIN'){
+      localStorage.removeItem('nl_token');localStorage.removeItem('nl_user');
+      err.textContent='Access denied. Admin account required.';err.style.display='block';
+      btn.innerHTML='🔐 Sign In to Admin Panel';btn.disabled=false;return;
+    }
+    showToast('Welcome, Admin! 🔐','success');
+    setTimeout(()=>location.href='dashboard.html',600);
+  }catch(e){
+    err.textContent=e.message;err.style.display='block';
+    btn.innerHTML='🔐 Sign In to Admin Panel';btn.disabled=false;
+  }
+}
+document.getElementById('pass').addEventListener('keydown',e=>{if(e.key==='Enter')doAdminLogin();});
+</script>
+</body>
+</html>

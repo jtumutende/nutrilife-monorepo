@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Create Account — NutriLife Uganda</title>
+<link rel="stylesheet" href="../css/global.css">
+<style>
+.auth-wrap{display:grid;grid-template-columns:1fr 1.4fr;min-height:calc(100vh - var(--nav-h))}
+.auth-vis{background:linear-gradient(135deg,var(--g800),#1B4332);padding:60px;color:#fff;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.auth-vis::before{content:'🌱';font-size:280px;opacity:.05;position:absolute;top:-60px;right:-60px}
+.atitle{font-family:var(--font-head);font-size:clamp(26px,3vw,40px);font-weight:900;line-height:1.1;margin-bottom:16px}
+.asub{font-size:15px;opacity:.75;line-height:1.7;margin-bottom:32px}
+.av-perks{display:flex;flex-direction:column;gap:14px}
+.av-perk{display:flex;align-items:center;gap:14px;font-size:14px}
+.perk-icon{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.perk-text b{display:block;font-weight:600}.perk-text span{opacity:.65;font-size:12px}
+.form-side{background:#fff;display:flex;align-items:flex-start;justify-content:center;padding:48px;overflow-y:auto}
+.form-box{width:100%;max-width:480px}
+.step-bar{display:flex;gap:5px;margin-bottom:24px}
+.sbar{flex:1;height:4px;border-radius:2px;background:var(--light);transition:background .3s}
+.sbar.done{background:var(--g800)}
+.sw{display:none}.sw.active{display:block}
+.slabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:18px}
+.goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.goal-card{border:2px solid var(--light);border-radius:var(--r-sm);padding:14px;cursor:pointer;transition:all .2s;text-align:center}
+.goal-card:hover{border-color:var(--g700);background:var(--g50)}
+.goal-card.sel{border-color:var(--g800);background:var(--g50)}
+.goal-icon{font-size:24px;margin-bottom:6px}.goal-name{font-size:13px;font-weight:600}
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.plan-sel{border:2px solid var(--light);border-radius:var(--r-sm);padding:14px;cursor:pointer;transition:all .2s;text-align:center}
+.plan-sel:hover{border-color:var(--g700)}
+.plan-sel.sel{border-color:var(--g800);background:var(--g50)}
+.plan-sel-price{font-family:var(--font-head);font-size:18px;font-weight:900;color:var(--g800)}
+.aswitch{text-align:center;margin-top:18px;font-size:14px;color:var(--mid)}
+.aswitch a{color:var(--g800);font-weight:600;cursor:pointer}
+@media(max-width:800px){.auth-wrap{grid-template-columns:1fr}.auth-vis{display:none}.form-side{padding:32px 20px}}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+<nav class="main-nav">
+  <div class="nav-logo" onclick="location.href='../index.html'">🥗 Nutri<span class="accent">Life</span></div>
+  <div class="nav-links"><button class="nav-link outline" onclick="location.href='login.html'">Already have account?</button></div>
+</nav>
+<div class="auth-wrap">
+  <div class="auth-vis">
+    <span class="s-tag" style="color:rgba(255,255,255,.5)">Join 12,000+ Members</span>
+    <div class="atitle">Start Your Nutrition Journey Today</div>
+    <p class="asub">Get a personalized meal plan, track your health, and order chef-prepared meals delivered to your door.</p>
+    <div class="av-perks">
+      <div class="av-perk"><div class="perk-icon">🎯</div><div class="perk-text"><b>7-Day Free Trial</b><span>No credit card required</span></div></div>
+      <div class="av-perk"><div class="perk-icon">🥗</div><div class="perk-text"><b>Personalized Plan</b><span>Built by certified nutritionists</span></div></div>
+      <div class="av-perk"><div class="perk-icon">💳</div><div class="perk-text"><b>Easy Payments</b><span>MTN MoMo, Airtel Money, VISA</span></div></div>
+      <div class="av-perk"><div class="perk-icon">💬</div><div class="perk-text"><b>WhatsApp Support</b><span>Order and track on WhatsApp</span></div></div>
+    </div>
+  </div>
+  <div class="form-side">
+    <div class="form-box">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--orange);margin-bottom:10px">Create Account</div>
+      <h2 style="font-family:var(--font-head);font-size:28px;font-weight:900;margin-bottom:6px">Get Started Free</h2>
+      <p style="font-size:14px;color:var(--mid);margin-bottom:24px">7-day trial · No credit card needed</p>
+      <div class="step-bar"><div class="sbar done" id="sb1"></div><div class="sbar" id="sb2"></div><div class="sbar" id="sb3"></div></div>
+
+      <!-- Step 1 -->
+      <div class="sw active" id="sw1">
+        <div class="slabel">Step 1 of 3 — Account Details</div>
+        <div class="form-row"><div class="form-group"><label>First Name</label><input class="form-control" id="fn" placeholder="John"></div><div class="form-group"><label>Last Name</label><input class="form-control" id="ln" placeholder="Doe"></div></div>
+        <div class="form-group"><label>Email Address</label><input class="form-control" type="email" id="em" placeholder="john@example.com"></div>
+        <div class="form-group"><label>WhatsApp Number</label><input class="form-control" type="tel" id="ph" placeholder="+256 700 000 000"></div>
+        <div class="form-group"><label>Password</label><input class="form-control" type="password" id="pw" placeholder="Minimum 8 characters"></div>
+        <div class="form-group"><label>Confirm Password</label><input class="form-control" type="password" id="cpw" placeholder="Repeat password"></div>
+        <button class="btn btn-green btn-block" onclick="step1()">Continue →</button>
+        <div class="aswitch">Have an account? <a onclick="location.href='login.html'">Sign in</a></div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="sw" id="sw2">
+        <div class="slabel">Step 2 of 3 — Health Profile</div>
+        <div class="form-row"><div class="form-group"><label>Age</label><input class="form-control" type="number" id="age" placeholder="25"></div><div class="form-group"><label>Gender</label><select class="form-control" id="gender"><option value="">Select...</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div></div>
+        <div class="form-row"><div class="form-group"><label>Weight (kg)</label><input class="form-control" type="number" id="wt" placeholder="70"></div><div class="form-group"><label>Height (cm)</label><input class="form-control" type="number" id="ht" placeholder="170"></div></div>
+        <div class="form-group"><label>Health Goal</label></div>
+        <div class="goal-grid">
+          <div class="goal-card sel" onclick="selGoal(this,'Weight Loss')"><div class="goal-icon">⚖️</div><div class="goal-name">Weight Loss</div></div>
+          <div class="goal-card" onclick="selGoal(this,'Muscle Gain')"><div class="goal-icon">💪</div><div class="goal-name">Muscle Gain</div></div>
+          <div class="goal-card" onclick="selGoal(this,'Healthy Eating')"><div class="goal-icon">🥗</div><div class="goal-name">Healthy Eating</div></div>
+          <div class="goal-card" onclick="selGoal(this,'Manage Diabetes')"><div class="goal-icon">🩺</div><div class="goal-name">Manage Diabetes</div></div>
+          <div class="goal-card" onclick="selGoal(this,'Heart Health')"><div class="goal-icon">❤️</div><div class="goal-name">Heart Health</div></div>
+          <div class="goal-card" onclick="selGoal(this,'General Wellness')"><div class="goal-icon">✨</div><div class="goal-name">General Wellness</div></div>
+        </div>
+        <div class="form-group"><label>Dietary Restrictions</label><select class="form-control" id="diet"><option>None</option><option>Vegetarian</option><option>Vegan</option><option>Gluten-Free</option><option>Dairy-Free</option><option>Halal</option></select></div>
+        <button class="btn btn-ghost btn-block" onclick="goStep(1)" style="margin-bottom:10px">← Back</button>
+        <button class="btn btn-green btn-block" onclick="step2()">Continue →</button>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="sw" id="sw3">
+        <div class="slabel">Step 3 of 3 — Choose Plan</div>
+        <div class="plan-grid">
+          <div class="plan-sel" id="ps-Starter" onclick="selPlan('Starter')"><div style="font-size:22px">🌱</div><div style="font-weight:700;font-size:14px">Starter</div><div class="plan-sel-price">45K</div><div style="font-size:11px;color:var(--mid)">UGX/mo</div></div>
+          <div class="plan-sel sel" id="ps-Pro" onclick="selPlan('Pro')"><div style="font-size:22px">⭐</div><div style="font-weight:700;font-size:14px">Pro</div><div class="plan-sel-price">95K</div><div style="font-size:11px;color:var(--mid)">UGX/mo</div></div>
+          <div class="plan-sel" id="ps-Elite" onclick="selPlan('Elite')"><div style="font-size:22px">👑</div><div style="font-weight:700;font-size:14px">Elite</div><div class="plan-sel-price">185K</div><div style="font-size:11px;color:var(--mid)">UGX/mo</div></div>
+        </div>
+        <div style="background:var(--g50);border-radius:var(--r-sm);padding:13px;margin-bottom:16px;font-size:13px;color:var(--g800)">🎉 <strong>7-day free trial</strong> — no payment today. Cancel anytime.</div>
+        <div class="form-group"><label>Referral Code (optional)</label><input class="form-control" placeholder="Enter referral code for 10% off"></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:18px"><input type="checkbox" id="terms" style="margin-top:3px;accent-color:var(--g800)"><label for="terms" style="font-size:13px;color:var(--mid)">I agree to the <a style="color:var(--g800);font-weight:600">Terms of Service</a> and <a style="color:var(--g800);font-weight:600">Privacy Policy</a></label></div>
+        <button class="btn btn-ghost btn-block" onclick="goStep(2)" style="margin-bottom:10px">← Back</button>
+        <button class="btn btn-green btn-block" id="create-btn" onclick="createAccount()">🚀 Create Free Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../js/api.js"></script>
+<script>
+if(Auth.isLoggedIn()) location.href='dashboard.html';
+let selPlanVal='Pro', selGoalVal='Weight Loss';
+const params=new URLSearchParams(location.search);
+if(params.get('plan')){selPlanVal=params.get('plan');setTimeout(()=>selPlan(selPlanVal),50);}
+function goStep(n){for(let i=1;i<=3;i++){document.getElementById('sw'+i).classList.toggle('active',i===n);document.getElementById('sb'+i).classList.toggle('done',i<=n);}window.scrollTo(0,0);}
+function step1(){
+  const fn=document.getElementById('fn').value.trim(),em=document.getElementById('em').value.trim(),pw=document.getElementById('pw').value,cpw=document.getElementById('cpw').value;
+  if(!fn||!em||!pw){showToast('Please fill all required fields','error');return;}
+  if(pw.length<8){showToast('Password must be at least 8 characters','error');return;}
+  if(pw!==cpw){showToast('Passwords do not match','error');return;}
+  goStep(2);
+}
+function step2(){if(!document.getElementById('age').value){showToast('Please enter your age','error');return;}goStep(3);}
+function selGoal(card,goal){document.querySelectorAll('.goal-card').forEach(c=>c.classList.remove('sel'));card.classList.add('sel');selGoalVal=goal;}
+function selPlan(p){selPlanVal=p;document.querySelectorAll('.plan-sel').forEach(c=>c.classList.remove('sel'));document.getElementById('ps-'+p)?.classList.add('sel');}
+async function createAccount(){
+  if(!document.getElementById('terms').checked){showToast('Please accept the Terms of Service','error');return;}
+  const btn=document.getElementById('create-btn');
+  btn.innerHTML='<span class="spinner"></span> Creating account...';btn.disabled=true;
+  try{
+    await Auth.register({firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),email:document.getElementById('em').value.trim(),phone:document.getElementById('ph').value.trim(),password:document.getElementById('pw').value,plan:selPlanVal,goal:selGoalVal});
+    showToast('Account created! Welcome to NutriLife 🎉','success');
+    setTimeout(()=>location.href='dashboard.html',800);
+  }catch(e){showToast(e.message,'error');btn.innerHTML='🚀 Create Free Account';btn.disabled=false;}
+}
+</script>
+</body>
+</html>

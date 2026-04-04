@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plans & Pricing — NutriLife Uganda</title>
+<link rel="stylesheet" href="../css/global.css">
+<style>
+.hero{background:linear-gradient(135deg,var(--g800),#1B4332);color:#fff;padding:60px 48px;text-align:center}
+.hero h1{font-family:var(--font-head);font-size:clamp(30px,5vw,52px);font-weight:900;margin-bottom:12px}
+.hero p{font-size:16px;opacity:.8;max-width:500px;margin:0 auto}
+.plans-wrap{padding:64px 48px}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;align-items:center;max-width:1000px;margin:0 auto 64px}
+.pc{background:#fff;border-radius:var(--r);padding:38px 32px;box-shadow:var(--shadow);position:relative;transition:transform .3s}
+.pc.pop{background:var(--dark);color:#fff;transform:scale(1.04)}
+.pc:not(.pop):hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.pc-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--dark);font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap}
+.pc-name{font-family:var(--font-head);font-size:22px;font-weight:700;margin-bottom:6px}
+.pc-price{font-family:var(--font-head);font-size:44px;font-weight:900;color:var(--g800);line-height:1}
+.pc.pop .pc-price{color:var(--gold)}
+.pc-unit{font-size:15px;color:var(--mid)}.pc.pop .pc-unit{color:rgba(255,255,255,.5)}
+.pc-tag{font-size:13px;color:var(--mid);margin:8px 0 22px}.pc.pop .pc-tag{color:rgba(255,255,255,.5)}
+.pc-feats{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:28px}
+.pc-feat{display:flex;gap:10px;font-size:13px;color:#555}.pc.pop .pc-feat{color:rgba(255,255,255,.8)}
+.pc-feat::before{content:'✓';color:var(--g800);font-weight:800;flex-shrink:0}.pc.pop .pc-feat::before{color:var(--gold)}
+.compare-wrap{max-width:1000px;margin:0 auto}
+.compare-title{font-family:var(--font-head);font-size:28px;font-weight:700;text-align:center;margin-bottom:32px}
+.compare-table{width:100%;border-collapse:collapse;font-size:14px}
+.compare-table th{padding:14px 18px;text-align:center;font-size:13px;font-weight:700;border-bottom:2px solid #F3F4F6}
+.compare-table th:first-child{text-align:left}
+.compare-table td{padding:13px 18px;text-align:center;border-bottom:1px solid #F3F4F6}
+.compare-table td:first-child{text-align:left;font-weight:500;color:var(--char)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:var(--g50)}
+.ck{color:var(--g800);font-size:18px;font-weight:700}
+.cx{color:#D1D5DB;font-size:18px}
+.faq-wrap{max-width:720px;margin:64px auto 0}
+.faq-title{font-family:var(--font-head);font-size:28px;font-weight:700;text-align:center;margin-bottom:32px}
+.faq-item{border:1px solid var(--light);border-radius:var(--r-sm);margin-bottom:10px;overflow:hidden}
+.faq-q{padding:16px 20px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;transition:background .2s}
+.faq-q:hover{background:var(--g50)}
+.faq-a{padding:0 20px;font-size:14px;color:#555;line-height:1.7;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s}
+.faq-item.open .faq-a{max-height:200px;padding:0 20px 16px}
+.faq-item.open .faq-icon{transform:rotate(180deg)}
+.faq-icon{transition:transform .3s}
+@media(max-width:900px){.plans-grid{grid-template-columns:1fr}.pc.pop{transform:none}.hero,.plans-wrap{padding-left:24px;padding-right:24px}}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+<nav class="main-nav">
+  <div class="nav-logo" onclick="location.href='../index.html'">🥗 Nutri<span class="accent">Life</span></div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="location.href='menu.html'">Menu</button>
+    <button class="nav-link outline" onclick="location.href='login.html'">Login</button>
+    <button class="nav-link solid" onclick="location.href='register.html'">Get Started</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Simple, Transparent Pricing</h1>
+  <p>No hidden fees. Cancel anytime. Start free for 7 days — no credit card required.</p>
+</div>
+
+<div class="plans-wrap">
+  <div class="plans-grid">
+    <div class="pc">
+      <div class="pc-name">🌱 Starter</div>
+      <div class="pc-price">45,000 <span class="pc-unit">UGX/mo</span></div>
+      <p class="pc-tag">Perfect for getting started</p>
+      <ul class="pc-feats">
+        <li class="pc-feat">5 meals per week</li>
+        <li class="pc-feat">Basic nutrition tracking</li>
+        <li class="pc-feat">WhatsApp bot support</li>
+        <li class="pc-feat">1 nutritionist consultation</li>
+        <li class="pc-feat">Standard delivery (UGX 5,000)</li>
+        <li class="pc-feat">7-day free trial</li>
+      </ul>
+      <a href="register.html?plan=Starter" class="btn btn-ghost btn-block">Get Started Free</a>
+    </div>
+    <div class="pc pop">
+      <div class="pc-badge">⭐ Most Popular</div>
+      <div class="pc-name">⭐ Pro</div>
+      <div class="pc-price">95,000 <span class="pc-unit">UGX/mo</span></div>
+      <p class="pc-tag">Best for serious health goals</p>
+      <ul class="pc-feats">
+        <li class="pc-feat">14 meals per week</li>
+        <li class="pc-feat">Advanced macro tracking</li>
+        <li class="pc-feat">Priority WhatsApp support</li>
+        <li class="pc-feat">4 consultations per month</li>
+        <li class="pc-feat">FREE delivery always</li>
+        <li class="pc-feat">Meal customization</li>
+        <li class="pc-feat">7-day free trial</li>
+      </ul>
+      <a href="register.html?plan=Pro" class="btn btn-gold btn-block">Subscribe Now</a>
+    </div>
+    <div class="pc">
+      <div class="pc-name">👑 Elite</div>
+      <div class="pc-price">185,000 <span class="pc-unit">UGX/mo</span></div>
+      <p class="pc-tag">Full concierge nutrition service</p>
+      <ul class="pc-feats">
+        <li class="pc-feat">Unlimited meals</li>
+        <li class="pc-feat">Custom meal creation</li>
+        <li class="pc-feat">Dedicated personal nutritionist</li>
+        <li class="pc-feat">Unlimited consultations</li>
+        <li class="pc-feat">Priority express delivery</li>
+        <li class="pc-feat">Lab test analysis</li>
+        <li class="pc-feat">Personalized weekly plan</li>
+      </ul>
+      <a href="register.html?plan=Elite" class="btn btn-green btn-block">Go Elite</a>
+    </div>
+  </div>
+
+  <div class="compare-wrap">
+    <div class="compare-title">Compare All Features</div>
+    <div class="card">
+      <div class="table-wrap">
+        <table class="compare-table">
+          <thead><tr><th>Feature</th><th>🌱 Starter</th><th>⭐ Pro</th><th>👑 Elite</th></tr></thead>
+          <tbody>
+            <tr><td>Meals per week</td><td>5</td><td>14</td><td>Unlimited</td></tr>
+            <tr><td>Nutrition tracking</td><td>Basic</td><td>Advanced</td><td>Advanced</td></tr>
+            <tr><td>Nutritionist consultations</td><td>1/month</td><td>4/month</td><td>Unlimited</td></tr>
+            <tr><td>Dedicated nutritionist</td><td class="cx">✗</td><td class="cx">✗</td><td class="ck">✓</td></tr>
+            <tr><td>Free delivery</td><td class="cx">✗</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Meal customization</td><td class="cx">✗</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Custom meal creation</td><td class="cx">✗</td><td class="cx">✗</td><td class="ck">✓</td></tr>
+            <tr><td>WhatsApp bot support</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Priority WhatsApp</td><td class="cx">✗</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Lab test analysis</td><td class="cx">✗</td><td class="cx">✗</td><td class="ck">✓</td></tr>
+            <tr><td>Personalized weekly plan</td><td class="cx">✗</td><td class="cx">✗</td><td class="ck">✓</td></tr>
+            <tr><td>7-day free trial</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td><strong>Monthly Price</strong></td><td><strong>UGX 45,000</strong></td><td><strong>UGX 95,000</strong></td><td><strong>UGX 185,000</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-wrap">
+    <div class="faq-title">Frequently Asked Questions</div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)"><span>How does the 7-day free trial work?</span><span class="faq-icon">▼</span></div><div class="faq-a">You get full access to your chosen plan for 7 days completely free. No credit card required to start. After the trial you can pay via MTN MoMo, Airtel Money or VISA.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)"><span>How do I pay? Do you accept MTN Mobile Money?</span><span class="faq-icon">▼</span></div><div class="faq-a">Yes! We accept MTN Mobile Money, Airtel Money and VISA/Mastercard — all via Pesapal, Uganda's leading payment platform. You'll receive a prompt on your phone for mobile money payments.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)"><span>Where do you deliver?</span><span class="faq-icon">▼</span></div><div class="faq-a">We currently deliver across Kampala including Nakasero, Kololo, Muyenga, Ntinda, Bugolobi, Kamwokya, Kisimenti, Kabalagala and more. Average delivery time is 30-45 minutes.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)"><span>Can I cancel my subscription anytime?</span><span class="faq-icon">▼</span></div><div class="faq-a">Yes, you can cancel anytime from your Profile page or by contacting support. There are no cancellation fees. Your access continues until the end of the billing period.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)"><span>Can I order on WhatsApp?</span><span class="faq-icon">▼</span></div><div class="faq-a">Yes! Our WhatsApp bot at +256 700 123 456 lets you browse the menu, place orders and track deliveries. Just type MENU to get started.</div></div>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+function toggleFAQ(el){ el.closest('.faq-item').classList.toggle('open'); }
+</script>
+</body>
+</html>

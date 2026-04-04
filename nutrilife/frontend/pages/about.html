@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About Us — NutriLife Uganda</title>
+<link rel="stylesheet" href="../css/global.css">
+<style>
+.about-hero{background:linear-gradient(135deg,var(--g800),#1B4332);color:#fff;padding:80px 48px;position:relative;overflow:hidden}
+.about-hero::before{content:'🌿';font-size:300px;position:absolute;right:-60px;top:-60px;opacity:.05}
+.about-hero h1{font-family:var(--font-head);font-size:clamp(32px,5vw,58px);font-weight:900;margin-bottom:16px;max-width:700px}
+.about-hero p{font-size:17px;opacity:.8;max-width:560px;line-height:1.75}
+.mission-wrap{padding:80px 48px;background:#fff}
+.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1000px;margin:0 auto}
+.mission-icon{font-size:100px;text-align:center}
+.mission-title{font-family:var(--font-head);font-size:36px;font-weight:900;margin-bottom:16px}
+.mission-text{font-size:16px;color:#555;line-height:1.8}
+.stats-bar{background:var(--dark);padding:48px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+.sbar-num{font-family:var(--font-head);font-size:42px;font-weight:900;color:var(--gold);line-height:1}
+.sbar-label{font-size:13px;color:rgba(255,255,255,.6);margin-top:6px}
+.team-wrap{padding:80px 48px}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
+.team-card{background:#fff;border-radius:var(--r);padding:32px;box-shadow:var(--shadow);text-align:center}
+.team-av{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--g400),var(--g800));display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin:0 auto 16px;font-weight:700}
+.team-name{font-family:var(--font-head);font-size:18px;font-weight:700;margin-bottom:4px}
+.team-role{font-size:13px;color:var(--g800);font-weight:600;margin-bottom:10px}
+.team-bio{font-size:13px;color:var(--mid);line-height:1.65}
+.values-wrap{padding:80px 48px;background:var(--cream)}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.val-card{background:#fff;border-radius:var(--r);padding:28px;box-shadow:var(--shadow)}
+.val-icon{font-size:36px;margin-bottom:12px}
+.val-title{font-family:var(--font-head);font-size:18px;font-weight:700;margin-bottom:8px}
+.val-text{font-size:14px;color:#666;line-height:1.65}
+@media(max-width:900px){.mission-grid{grid-template-columns:1fr}.stats-bar{grid-template-columns:repeat(2,1fr)}.team-grid,.values-grid{grid-template-columns:1fr 1fr}.about-hero,.mission-wrap,.team-wrap,.values-wrap{padding-left:24px;padding-right:24px}}
+@media(max-width:600px){.team-grid,.values-grid{grid-template-columns:1fr}.stats-bar{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+<nav class="main-nav">
+  <div class="nav-logo" onclick="location.href='../index.html'">🥗 Nutri<span class="accent">Life</span></div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="location.href='menu.html'">Menu</button>
+    <button class="nav-link" onclick="location.href='plans.html'">Plans</button>
+    <button class="nav-link outline" onclick="location.href='login.html'">Login</button>
+    <button class="nav-link solid" onclick="location.href='register.html'">Get Started</button>
+  </div>
+</nav>
+
+<div class="about-hero">
+  <h1>Transforming Health in Uganda, One Meal at a Time</h1>
+  <p>NutriLife was founded in 2023 with a simple mission: make personalized, science-backed nutrition accessible to every Ugandan.</p>
+</div>
+
+<div class="stats-bar">
+  <div><div class="sbar-num">12,000+</div><div class="sbar-label">Active Members</div></div>
+  <div><div class="sbar-num">250+</div><div class="sbar-label">Meal Varieties</div></div>
+  <div><div class="sbar-num">15</div><div class="sbar-label">Certified Nutritionists</div></div>
+  <div><div class="sbar-num">98%</div><div class="sbar-label">Satisfaction Rate</div></div>
+</div>
+
+<div class="mission-wrap">
+  <div class="mission-grid">
+    <div>
+      <span class="s-tag">Our Mission</span>
+      <div class="mission-title">Eat Smart.<br>Live Better.</div>
+      <p class="mission-text">We believe that good nutrition is the foundation of a healthy life. But in Uganda, access to personalized nutrition advice and healthy prepared meals has always been limited to a few. NutriLife is changing that.</p>
+      <p class="mission-text" style="margin-top:16px">We combine technology, certified nutrition science, and local culinary expertise to deliver affordable, personalized meal plans and fresh food to your door — paid for the way Ugandans pay: with MTN MoMo, Airtel Money, or VISA.</p>
+    </div>
+    <div class="mission-icon">🥗</div>
+  </div>
+</div>
+
+<div class="team-wrap">
+  <div style="text-align:center">
+    <span class="s-tag">Our Team</span>
+    <h2 class="s-title">Meet the People Behind <span>NutriLife</span></h2>
+  </div>
+  <div class="team-grid">
+    <div class="team-card"><div class="team-av">AN</div><div class="team-name">Apio Nancy, MSc</div><div class="team-role">Lead Nutritionist & Co-Founder</div><p class="team-bio">MSc in Human Nutrition from Makerere University. 10 years experience in clinical nutrition and diet therapy.</p></div>
+    <div class="team-card"><div class="team-av">KD</div><div class="team-name">Kato David</div><div class="team-role">CEO & Co-Founder</div><p class="team-bio">Former software engineer at MTN Uganda. Built NutriLife to solve the nutrition access gap he experienced firsthand.</p></div>
+    <div class="team-card"><div class="team-av">NF</div><div class="team-name">Nakato Fatuma, RDN</div><div class="team-role">Senior Registered Dietitian</div><p class="team-bio">Registered Dietitian Nutritionist specializing in diabetes management, weight loss and heart health nutrition.</p></div>
+    <div class="team-card"><div class="team-av">OK</div><div class="team-name">Okello Brian</div><div class="team-role">Head Chef</div><p class="team-bio">Trained at Kampala International Hotel School. Expert in translating nutrition science into delicious Ugandan cuisine.</p></div>
+    <div class="team-card"><div class="team-av">MG</div><div class="team-name">Mugisha Grace</div><div class="team-role">Customer Success Manager</div><p class="team-bio">Ensures every NutriLife member gets the support they need to hit their health goals. WhatsApp champion.</p></div>
+    <div class="team-card"><div class="team-av">BB</div><div class="team-name">Byamugisha Bob</div><div class="team-role">Head of Logistics</div><p class="team-bio">Manages our delivery network across Kampala. Obsessed with keeping deliveries under 45 minutes.</p></div>
+  </div>
+</div>
+
+<div class="values-wrap">
+  <div style="text-align:center">
+    <span class="s-tag">Our Values</span>
+    <h2 class="s-title">What Drives Us Every Day</h2>
+  </div>
+  <div class="values-grid">
+    <div class="val-card"><div class="val-icon">🔬</div><div class="val-title">Science-Backed</div><p class="val-text">Every meal plan is grounded in current nutritional science, reviewed by registered dietitians.</p></div>
+    <div class="val-card"><div class="val-icon">🤝</div><div class="val-title">Accessible to All</div><p class="val-text">We price our plans to be affordable for Ugandans at every income level. Health is a right, not a luxury.</p></div>
+    <div class="val-card"><div class="val-icon">🌿</div><div class="val-title">Locally Sourced</div><p class="val-text">We partner with Ugandan farmers for fresh, seasonal ingredients — supporting local agriculture.</p></div>
+    <div class="val-card"><div class="val-icon">📱</div><div class="val-title">Tech-Enabled</div><p class="val-text">Our platform makes tracking nutrition, ordering food and consulting nutritionists effortless from your phone.</p></div>
+    <div class="val-card"><div class="val-icon">💬</div><div class="val-title">Always There</div><p class="val-text">Our WhatsApp support runs 7AM to 10PM daily. Real humans, real answers — not just automated bots.</p></div>
+    <div class="val-card"><div class="val-icon">🏆</div><div class="val-title">Results-Driven</div><p class="val-text">We measure success by our members' health outcomes. If you're not improving, we're not doing our job.</p></div>
+  </div>
+</div>
+
+<div style="background:linear-gradient(135deg,var(--g800),#1B4332);padding:72px 48px;text-align:center;color:#fff">
+  <h2 style="font-family:var(--font-head);font-size:clamp(28px,4vw,46px);font-weight:900;margin-bottom:14px">Ready to Join Us?</h2>
+  <p style="font-size:17px;opacity:.8;margin-bottom:36px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7">Start your 7-day free trial today and see why 12,000 Ugandans trust NutriLife with their health.</p>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <a href="register.html" class="btn btn-gold btn-lg">🚀 Start Free Trial</a>
+    <a href="https://wa.me/256700123456" target="_blank" class="btn btn-wa btn-lg">💬 Chat on WhatsApp</a>
+  </div>
+</div>
+
+<footer style="background:var(--dark);color:#fff;padding:32px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+  <div style="font-family:var(--font-head);font-size:20px;font-weight:900">🥗 NutriLife <span style="color:var(--orange)">Uganda</span></div>
+  <div style="font-size:13px;color:rgba(255,255,255,.4)">© 2025 NutriLife Uganda Ltd. All rights reserved.</div>
+  <div style="display:flex;gap:16px">
+    <a href="../index.html" style="font-size:13px;color:rgba(255,255,255,.6)">Home</a>
+    <a href="menu.html" style="font-size:13px;color:rgba(255,255,255,.6)">Menu</a>
+    <a href="plans.html" style="font-size:13px;color:rgba(255,255,255,.6)">Plans</a>
+    <a href="login.html" style="font-size:13px;color:rgba(255,255,255,.6)">Login</a>
+  </div>
+</footer>
+
+<script src="../js/api.js"></script>
+</body>
+</html>

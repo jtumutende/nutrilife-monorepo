@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard — NutriLife</title>
+<link rel="stylesheet" href="../css/global.css">
+<style>
+body{background:#F8FAFC}
+nav.main-nav{background:var(--dark);border-bottom:1px solid rgba(255,255,255,.08)}
+nav.main-nav .nav-logo{color:#fff}
+nav.main-nav .nav-link{color:rgba(255,255,255,.7)}
+nav.main-nav .nav-link:hover{background:rgba(255,255,255,.08);color:#fff}
+.sb-brand{padding:0 18px 18px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+.sb-brand-name{font-family:var(--font-head);font-size:18px;font-weight:900;color:#fff;margin-bottom:2px}
+.sb-brand-role{font-size:12px;color:rgba(255,255,255,.4)}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+<nav class="main-nav">
+  <div class="nav-logo">🥗 NutriLife <span style="font-size:13px;font-weight:500;color:rgba(255,255,255,.4);margin-left:6px">Admin</span></div>
+  <div class="nav-links">
+    <span style="font-size:13px;color:rgba(255,255,255,.5)" id="admin-name">Admin</span>
+    <button class="nav-link" onclick="location.href='../pages/dashboard.html'">User View</button>
+    <button class="btn btn-red btn-sm" onclick="Auth.logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="app-layout">
+  <aside class="sidebar sidebar-dark">
+    <div class="sb-brand">
+      <div class="sb-brand-name">🔐 Admin Panel</div>
+      <div class="sb-brand-role">NutriLife Uganda</div>
+    </div>
+    <div class="sb-section">Overview</div>
+    <div class="sb-item active" onclick="showAP('dashboard',this)"><span class="sb-icon">📊</span>Dashboard</div>
+    <div class="sb-section">Content</div>
+    <div class="sb-item" onclick="showAP('meals',this)"><span class="sb-icon">🥗</span>Manage Meals</div>
+    <div class="sb-section">Users</div>
+    <div class="sb-item" onclick="showAP('users',this)"><span class="sb-icon">👥</span>All Users</div>
+    <div class="sb-section">Finance</div>
+    <div class="sb-item" onclick="showAP('orders',this)"><span class="sb-icon">📦</span>All Orders</div>
+    <div class="sb-item" onclick="showAP('payments',this)"><span class="sb-icon">💳</span>Payments</div>
+    <div style="margin-top:auto;padding:16px"><button class="btn btn-red btn-block btn-sm" onclick="Auth.logout()">🚪 Logout</button></div>
+  </aside>
+
+  <main class="page-content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="apanel-dashboard">
+      <div class="panel-header"><div><h2 class="panel-title">Dashboard</h2><p class="panel-sub">NutriLife operations overview</p></div></div>
+      <div class="stat-grid sg4">
+        <div class="stat-card"><div class="stat-icon ic-g">👥</div><div><div class="stat-value" id="kpi-users">—</div><div class="stat-label">Total Users</div></div></div>
+        <div class="stat-card"><div class="stat-icon ic-gl">📦</div><div><div class="stat-value" id="kpi-orders">—</div><div class="stat-label">Total Orders</div></div></div>
+        <div class="stat-card"><div class="stat-icon ic-o">💰</div><div><div class="stat-value" id="kpi-revenue">—</div><div class="stat-label">Revenue (UGX)</div></div></div>
+        <div class="stat-card"><div class="stat-icon ic-b">🥗</div><div><div class="stat-value" id="kpi-meals">—</div><div class="stat-label">Active Meals</div></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card card-body"><div style="font-weight:700;margin-bottom:14px">Recent Orders</div><div id="recent-orders">Loading...</div></div>
+        <div class="card card-body"><div style="font-weight:700;margin-bottom:14px">Recent Payments</div><div id="recent-payments">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- MANAGE MEALS -->
+    <div class="panel" id="apanel-meals">
+      <div class="panel-header"><div><h2 class="panel-title">Manage Meals</h2><p class="panel-sub">Add, edit and delete menu items</p></div><button class="btn btn-green" onclick="openMealModal()">+ Add New Meal</button></div>
+      <div class="card">
+        <div style="padding:16px 16px 0;display:flex;gap:10px;flex-wrap:wrap">
+          <input type="text" placeholder="🔍 Search meals..." oninput="filterMT(this.value)" style="padding:9px 14px;border:1.5px solid var(--light);border-radius:var(--r-sm);font-size:13px;flex:1;min-width:200px;outline:none">
+          <select id="cat-f" onchange="filterMT()" style="padding:9px 14px;border:1.5px solid var(--light);border-radius:var(--r-sm);font-size:13px;outline:none">
+            <option value="">All Categories</option>
+            <option>breakfast</option><option>lunch</option><option>dinner</option><option>snack</option><option>vegan</option>
+          </select>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Meal</th><th>Category</th><th>Price</th><th>Calories</th><th>Status</th><th>Actions</th></tr></thead><tbody id="meals-tb"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--mid)">Loading...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="panel" id="apanel-users">
+      <div class="panel-header"><div><h2 class="panel-title">All Users</h2><p class="panel-sub" id="users-count">Loading...</p></div></div>
+      <div class="card">
+        <div style="padding:16px 16px 0"><input type="text" placeholder="🔍 Search users..." style="padding:9px 14px;border:1.5px solid var(--light);border-radius:var(--r-sm);font-size:13px;width:100%;max-width:360px;outline:none"></div>
+        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Plan</th><th>Orders</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead><tbody id="users-tb"><tr><td colspan="8" style="text-align:center;padding:30px;color:var(--mid)">Loading...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="panel" id="apanel-orders">
+      <div class="panel-header">
+        <div><h2 class="panel-title">All Orders</h2><p class="panel-sub" id="orders-count">Loading...</p></div>
+        <select onchange="filterOrders(this.value)" style="padding:9px 14px;border:1.5px solid var(--light);border-radius:var(--r-sm);font-size:13px;outline:none">
+          <option value="">All Statuses</option>
+          <option value="PENDING">Pending</option><option value="PREPARING">Preparing</option>
+          <option value="ON_THE_WAY">On the Way</option><option value="DELIVERED">Delivered</option><option value="CANCELLED">Cancelled</option>
+        </select>
+      </div>
+      <div class="card">
+        <div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th><th>Update</th></tr></thead><tbody id="orders-tb"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--mid)">Loading...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="panel" id="apanel-payments">
+      <div class="panel-header"><div><h2 class="panel-title">Payments</h2><p class="panel-sub">All transactions</p></div><button class="btn btn-ghost btn-sm" onclick="showToast('Exporting...','success')">📥 Export CSV</button></div>
+      <div class="stat-grid sg3" style="margin-bottom:24px">
+        <div class="stat-card"><div class="stat-icon ic-g">💰</div><div><div class="stat-value" id="pay-total-k">—</div><div class="stat-label">Total Revenue (UGX)</div></div></div>
+        <div class="stat-card"><div class="stat-icon ic-b">✅</div><div><div class="stat-value" id="pay-success">—</div><div class="stat-label">Successful</div></div></div>
+        <div class="stat-card"><div class="stat-icon ic-r">❌</div><div><div class="stat-value" id="pay-failed">—</div><div class="stat-label">Failed</div></div></div>
+      </div>
+      <div class="card">
+        <div class="table-wrap"><table><thead><tr><th>Description</th><th>User</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody id="pay-tb"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mid)">Loading...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MEAL MODAL -->
+<div class="modal-overlay" id="meal-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><div class="modal-title" id="mmodal-title">🥗 Add New Meal</div><button class="modal-close" onclick="document.getElementById('meal-modal').classList.remove('open')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="mf-id">
+      <div class="form-row"><div class="form-group"><label>Meal Name *</label><input class="form-control" id="mf-name" placeholder="e.g. Grilled Chicken Rice"></div><div class="form-group"><label>Emoji</label><input class="form-control" id="mf-emoji" placeholder="🍱" maxlength="2"></div></div>
+      <div class="form-row"><div class="form-group"><label>Category *</label><select class="form-control" id="mf-cat"><option value="breakfast">Breakfast</option><option value="lunch">Lunch</option><option value="dinner">Dinner</option><option value="snack">Snack</option><option value="vegan">Vegan</option></select></div><div class="form-group"><label>Price (UGX) *</label><input class="form-control" type="number" id="mf-price" placeholder="25000"></div></div>
+      <div class="form-row-3"><div class="form-group"><label>Calories *</label><input class="form-control" type="number" id="mf-cal" placeholder="400"></div><div class="form-group"><label>Protein (g)</label><input class="form-control" type="number" id="mf-prot" placeholder="30"></div><div class="form-group"><label>Carbs (g)</label><input class="form-control" type="number" id="mf-carbs" placeholder="45"></div></div>
+      <div class="form-row"><div class="form-group"><label>Fat (g)</label><input class="form-control" type="number" id="mf-fat" placeholder="12"></div><div class="form-group"><label>Status</label><select class="form-control" id="mf-status"><option value="true">Available</option><option value="false">Unavailable</option></select></div></div>
+      <div class="form-group"><label>Description</label><textarea class="form-control" id="mf-desc" rows="3" placeholder="Brief description..."></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="document.getElementById('meal-modal').classList.remove('open')">Cancel</button><button class="btn btn-green" onclick="saveMeal()">💾 Save Meal</button></div>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+if(!Auth.isLoggedIn()||!Auth.isAdmin()) location.href='login.html';
+const au=Auth.getUser();
+if(au) document.getElementById('admin-name').textContent=au.firstName+' (Admin)';
+let allMeals=[],allUsers=[];
+
+function showAP(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('apanel-'+id)?.classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(l=>l.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  await Promise.all([loadDash(),loadMeals(),loadUsers(),loadOrders(),loadPayments()]);
+});
+
+async function loadDash(){
+  try{
+    const[users,orders,meals,pays]=await Promise.all([Users.getAll(),Orders.getAll(),Meals.getAllAdmin(),Payments.getAll()]);
+    document.getElementById('kpi-users').textContent=users.total||0;
+    document.getElementById('kpi-orders').textContent=orders.total||0;
+    document.getElementById('kpi-meals').textContent=meals.filter(m=>m.isAvailable).length;
+    const rev=pays.filter(p=>p.status==='SUCCESS').reduce((s,p)=>s+p.amount,0);
+    document.getElementById('kpi-revenue').textContent=(rev/1000).toFixed(0)+'K';
+    const ro=document.getElementById('recent-orders');
+    ro.innerHTML=(orders.orders||[]).slice(0,5).map(o=>`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F3F4F6"><div><div style="font-weight:600;font-size:14px">${o.orderNumber}</div><div style="font-size:12px;color:var(--mid)">${o.user?.firstName||''} ${o.user?.lastName||''}</div></div><div style="text-align:right"><div style="font-weight:600;font-size:13px">UGX ${o.totalAmount.toLocaleString()}</div>${statusBadge(o.status)}</div></div>`).join('')||'<div style="color:var(--mid);font-size:14px">No orders yet.</div>';
+    const rp=document.getElementById('recent-payments');
+    rp.innerHTML=pays.slice(0,5).map(p=>`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F3F4F6"><div><div style="font-weight:600;font-size:14px">${p.user?.firstName||''} ${p.user?.lastName||''}</div><div style="font-size:12px;color:var(--mid)">${fmtDate(p.createdAt)}</div></div><div style="text-align:right"><div style="font-weight:600;font-size:13px">UGX ${p.amount.toLocaleString()}</div>${statusBadge(p.status)}</div></div>`).join('')||'<div style="color:var(--mid);font-size:14px">No payments yet.</div>';
+  }catch(e){console.log('Dash error:',e.message);}
+}
+
+async function loadMeals(){
+  const tb=document.getElementById('meals-tb');
+  try{
+    allMeals=await Meals.getAllAdmin();
+    renderMealsT(allMeals);
+  }catch(e){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--mid)">${e.message}</td></tr>`;}
+}
+function renderMealsT(meals){
+  const tb=document.getElementById('meals-tb');
+  if(!meals.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--mid)">No meals found.</td></tr>';return;}
+  tb.innerHTML=meals.map(m=>`
+    <tr id="mrow-${m.id}">
+      <td><div style="display:flex;align-items:center;gap:10px"><span style="font-size:22px">${m.emoji}</span><span style="font-weight:600">${m.name}</span></div></td>
+      <td><span class="badge badge-green">${m.category}</span></td>
+      <td style="font-weight:600">UGX ${m.price.toLocaleString()}</td>
+      <td>${m.calories} kcal</td>
+      <td>${m.isAvailable?'<span class="badge badge-green">Available</span>':'<span class="badge badge-red">Unavailable</span>'}</td>
+      <td><div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" onclick="editMeal('${m.id}')">✏️ Edit</button><button class="btn btn-red btn-sm" onclick="deleteMeal('${m.id}','${m.name.replace(/'/g,"\\'")}')">🗑 Del</button></div></td>
+    </tr>`).join('');
+}
+function filterMT(val){
+  const s=(document.querySelector('#apanel-meals input')?.value||'').toLowerCase();
+  const c=document.getElementById('cat-f')?.value||'';
+  renderMealsT(allMeals.filter(m=>{
+    return(!s||m.name.toLowerCase().includes(s))&&(!c||m.category===c);
+  }));
+}
+function openMealModal(meal){
+  document.getElementById('mmodal-title').textContent=meal?'✏️ Edit Meal':'🥗 Add New Meal';
+  document.getElementById('mf-id').value=meal?.id||'';
+  ['name','emoji','price','cal','prot','carbs','fat','desc'].forEach(f=>{const el=document.getElementById('mf-'+f);if(el)el.value='';});
+  if(meal){
+    document.getElementById('mf-name').value=meal.name;
+    document.getElementById('mf-emoji').value=meal.emoji;
+    document.getElementById('mf-price').value=meal.price;
+    document.getElementById('mf-cal').value=meal.calories;
+    document.getElementById('mf-prot').value=meal.protein;
+    document.getElementById('mf-carbs').value=meal.carbs;
+    document.getElementById('mf-fat').value=meal.fat;
+    document.getElementById('mf-desc').value=meal.description||'';
+    document.getElementById('mf-cat').value=meal.category;
+    document.getElementById('mf-status').value=meal.isAvailable?'true':'false';
+  }
+  document.getElementById('meal-modal').classList.add('open');
+}
+function editMeal(id){openMealModal(allMeals.find(m=>m.id===id));}
+async function saveMeal(){
+  const name=document.getElementById('mf-name').value.trim();
+  if(!name){showToast('Meal name is required','error');return;}
+  const data={name,emoji:document.getElementById('mf-emoji').value||'🍱',category:document.getElementById('mf-cat').value,price:parseInt(document.getElementById('mf-price').value),calories:parseInt(document.getElementById('mf-cal').value),protein:parseFloat(document.getElementById('mf-prot').value)||0,carbs:parseFloat(document.getElementById('mf-carbs').value)||0,fat:parseFloat(document.getElementById('mf-fat').value)||0,description:document.getElementById('mf-desc').value,isAvailable:document.getElementById('mf-status').value==='true'};
+  const editId=document.getElementById('mf-id').value;
+  try{
+    if(editId){await Meals.update(editId,data);showToast(`"${name}" updated ✅`,'success');}
+    else{await Meals.create(data);showToast(`"${name}" added ✅`,'success');}
+    document.getElementById('meal-modal').classList.remove('open');
+    loadMeals();
+  }catch(e){showToast(e.message,'error');}
+}
+async function deleteMeal(id,name){
+  if(!confirm(`Delete "${name}"? This cannot be undone.`))return;
+  try{await Meals.delete(id);showToast(`"${name}" deleted`,'success');loadMeals();}
+  catch(e){showToast(e.message,'error');}
+}
+
+async function loadUsers(){
+  const tb=document.getElementById('users-tb');
+  try{
+    const data=await Users.getAll();
+    allUsers=data.users||[];
+    document.getElementById('users-count').textContent=`${data.total||0} registered users`;
+    if(!allUsers.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--mid)">No users yet.</td></tr>';return;}
+    tb.innerHTML=allUsers.map(u=>`
+      <tr>
+        <td><strong>${u.firstName} ${u.lastName}</strong></td>
+        <td style="color:var(--mid);font-size:13px">${u.email}</td>
+        <td style="font-size:12px">${u.phone||'—'}</td>
+        <td>${planBadge(u.plan)}</td>
+        <td style="text-align:center">${u._count?.orders||0}</td>
+        <td style="color:var(--mid);font-size:13px">${fmtDate(u.createdAt)}</td>
+        <td>${u.isActive?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Suspended</span>'}</td>
+        <td>${u.isActive?`<button class="btn btn-red btn-sm" onclick="suspendUser('${u.id}')">Suspend</button>`:`<button class="btn btn-green btn-sm" onclick="activateUser('${u.id}')">Activate</button>`}</td>
+      </tr>`).join('');
+  }catch(e){tb.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--mid)">${e.message}</td></tr>`;}
+}
+async function suspendUser(id){try{await Users.suspend(id);showToast('User suspended','success');loadUsers();}catch(e){showToast(e.message,'error');}}
+async function activateUser(id){try{await Users.activate(id);showToast('User activated','success');loadUsers();}catch(e){showToast(e.message,'error');}}
+
+async function loadOrders(status){
+  const tb=document.getElementById('orders-tb');
+  try{
+    const data=await Orders.getAll(status);
+    document.getElementById('orders-count').textContent=`${data.total||0} total orders`;
+    const orders=data.orders||[];
+    if(!orders.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--mid)">No orders found.</td></tr>';return;}
+    tb.innerHTML=orders.map(o=>`
+      <tr>
+        <td><strong>${o.orderNumber}</strong></td>
+        <td>${o.user?.firstName||''} ${o.user?.lastName||''}<br><span style="font-size:12px;color:var(--mid)">${o.user?.phone||''}</span></td>
+        <td style="font-weight:600">UGX ${o.totalAmount.toLocaleString()}</td>
+        <td style="color:var(--mid);font-size:13px">${fmtDate(o.createdAt)}</td>
+        <td>${statusBadge(o.status)}</td>
+        <td><select onchange="updateOrderStatus('${o.id}',this)" style="padding:6px 10px;border:1px solid var(--light);border-radius:var(--r-sm);font-size:12px;outline:none">
+          <option value="">Update...</option>
+          <option value="PREPARING">Preparing</option>
+          <option value="ON_THE_WAY">On the Way</option>
+          <option value="DELIVERED">Delivered</option>
+          <option value="CANCELLED">Cancelled</option>
+        </select></td>
+      </tr>`).join('');
+  }catch(e){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--mid)">${e.message}</td></tr>`;}
+}
+function filterOrders(s){loadOrders(s||undefined);}
+async function updateOrderStatus(id,sel){
+  if(!sel.value)return;
+  try{await Orders.updateStatus(id,sel.value);showToast(`Order updated to ${sel.value} ✅`,'success');sel.value='';loadOrders();}
+  catch(e){showToast(e.message,'error');sel.value='';}
+}
+
+async function loadPayments(){
+  const tb=document.getElementById('pay-tb');
+  try{
+    const pays=await Payments.getAll();
+    const ok=pays.filter(p=>p.status==='SUCCESS'),fail=pays.filter(p=>p.status==='FAILED');
+    const rev=ok.reduce((s,p)=>s+p.amount,0);
+    document.getElementById('pay-total-k').textContent=(rev/1000).toFixed(0)+'K';
+    document.getElementById('pay-success').textContent=ok.length;
+    document.getElementById('pay-failed').textContent=fail.length;
+    if(!pays.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mid)">No payments yet.</td></tr>';return;}
+    tb.innerHTML=pays.map(p=>`
+      <tr>
+        <td>${p.description||'Payment'}</td>
+        <td>${p.user?.firstName||''} ${p.user?.lastName||''}</td>
+        <td style="font-weight:600">UGX ${p.amount.toLocaleString()}</td>
+        <td style="color:var(--mid);font-size:13px">${fmtDate(p.createdAt)}</td>
+        <td>${statusBadge(p.status)}</td>
+      </tr>`).join('');
+  }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--mid)">${e.message}</td></tr>`;}
+}
+</script>
+</body>
+</html>

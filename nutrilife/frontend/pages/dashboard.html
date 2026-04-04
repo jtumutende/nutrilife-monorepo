@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Dashboard — NutriLife</title>
+<link rel="stylesheet" href="../css/global.css">
+<style>
+body{background:#F5FBF7}
+.sb-user{padding:0 18px 18px;border-bottom:1px solid #F3F4F6;margin-bottom:10px}
+.sb-av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--g700),var(--g800));display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin-bottom:10px}
+.sb-name{font-weight:700;font-size:15px}.sb-plan{font-size:12px;color:var(--mid);margin-top:2px}
+.pay-method{border:2px solid var(--light);border-radius:var(--r-sm);padding:16px;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;gap:14px;transition:all .2s}
+.pay-method:hover{border-color:var(--g700);background:var(--g50)}
+.pay-method.sel{border-color:var(--g800);background:rgba(45,106,79,.03)}
+.pay-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--light);margin-left:auto;transition:all .2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
+.pay-method.sel .pay-check{background:var(--g800);border-color:var(--g800);color:#fff}
+.chat-win{display:flex;flex-direction:column;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);background:#fff;height:520px}
+.chat-top{background:var(--g800);color:#fff;padding:15px 20px;display:flex;align-items:center;gap:12px}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#FAFFF8}
+.cm{max-width:76%}.cm.bot{align-self:flex-start}.cm.user{align-self:flex-end}
+.cm-bubble{padding:10px 14px;font-size:13px;line-height:1.55;border-radius:4px 16px 16px 16px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.cm.user .cm-bubble{background:var(--g800);color:#fff;border-radius:16px 4px 16px 16px}
+.chat-qrs{padding:8px 16px 0;display:flex;gap:7px;flex-wrap:wrap}
+.qr{padding:5px 12px;background:#fff;border:1.5px solid var(--light);border-radius:20px;font-size:12px;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.qr:hover{border-color:var(--g800);color:var(--g800)}
+.chat-inp-row{padding:12px 14px;border-top:1px solid var(--light);display:flex;gap:8px}
+.chat-inp{flex:1;padding:10px 14px;border:1.5px solid var(--light);border-radius:24px;font-size:13px;outline:none;font-family:var(--font-body)}
+.chat-inp:focus{border-color:var(--g700)}
+.chat-send{width:40px;height:40px;border-radius:50%;border:none;background:var(--g800);color:#fff;font-size:16px;cursor:pointer}
+.ml-item{background:#fff;border-radius:var(--r-sm);border:1px solid #F3F4F6;padding:12px;display:flex;align-items:center;gap:12px;margin-bottom:8px;transition:box-shadow .2s}
+.ml-item:hover{box-shadow:var(--shadow)}
+.ml-emoji{font-size:26px;width:42px;height:42px;background:var(--cream);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wz-steps{display:flex;align-items:center;margin-bottom:28px}
+.wz-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:#E5E7EB;color:var(--mid);flex-shrink:0;transition:all .3s}
+.wz-dot.done{background:var(--g800);color:#fff}.wz-dot.active{background:var(--dark);color:#fff}
+.wz-line{flex:1;height:2px;background:#E5E7EB;margin:0 6px;margin-bottom:18px;transition:background .4s}
+.wz-line.done{background:var(--g800)}
+.wz-label{font-size:10px;color:var(--mid);margin-top:4px;text-align:center}
+.oz{display:none}.oz.active{display:block}
+.omc{background:#fff;border-radius:var(--r-sm);border:1px solid #F3F4F6;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.omc:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.omc-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:48px}
+.omc-body{padding:12px}
+.omc-name{font-weight:600;font-size:13px;margin-bottom:6px}
+.omc-macros{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.omc-foot{display:flex;justify-content:space-between;align-items:center}
+.omc-price{font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--g800)}
+.add-btn{padding:5px 12px;background:var(--g800);color:#fff;border:none;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer}
+.add-btn:hover{background:var(--g700)}
+.pill{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.p-cal{background:#FEF3C7;color:#92400E}.p-prot{background:#DBEAFE;color:#1E40AF}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+<nav class="main-nav">
+  <div class="nav-logo" onclick="location.href='../index.html'">🥗 Nutri<span class="accent">Life</span></div>
+  <div class="nav-links" style="gap:12px">
+    <span style="font-size:13px;color:var(--mid)" id="nav-hi">Welcome!</span>
+    <button class="nav-link" onclick="showPanel('chatbot')">💬 NutriBot</button>
+    <button class="btn btn-red btn-sm" onclick="Auth.logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sb-user">
+      <div class="sb-av" id="sb-av">?</div>
+      <div class="sb-name" id="sb-name">Loading...</div>
+      <div class="sb-plan" id="sb-plan">⭐ Pro Plan</div>
+    </div>
+    <div class="sb-section">Main</div>
+    <div class="sb-item active" onclick="showPanel('overview',this)"><span class="sb-icon">📊</span>Overview</div>
+    <div class="sb-item" onclick="showPanel('order',this)"><span class="sb-icon">🛒</span>Order Meals <span class="sb-badge cart-badge">0</span></div>
+    <div class="sb-item" onclick="showPanel('track',this)"><span class="sb-icon">🥗</span>Meal Tracker</div>
+    <div class="sb-item" onclick="showPanel('myorders',this)"><span class="sb-icon">📦</span>My Orders</div>
+    <div class="sb-section">Account</div>
+    <div class="sb-item" onclick="showPanel('payments',this)"><span class="sb-icon">💳</span>Payments</div>
+    <div class="sb-item" onclick="showPanel('chatbot',this)"><span class="sb-icon">💬</span>NutriBot</div>
+    <div class="sb-item" onclick="showPanel('profile',this)"><span class="sb-icon">👤</span>My Profile</div>
+    <div style="margin-top:auto;padding:16px"><button class="btn btn-red btn-block btn-sm" onclick="Auth.logout()">🚪 Logout</button></div>
+  </aside>
+
+  <main class="page-content">
+
+    <!-- OVERVIEW -->
+    <div class="panel active" id="panel-overview">
+      <div class="panel-header">
+        <div><h2 class="panel-title" id="greeting">Good Day 👋</h2><p class="panel-sub">Track your nutrition and manage your meals</p></div>
+        <button class="btn btn-green" onclick="showPanel('order',null)">+ Order Meals</button>
+      </div>
+      <div class="stat-grid sg4">
+        <div class="stat-card"><div class="stat-icon ic-o">🔥</div><div><div class="stat-value" id="ov-cal">—</div><div class="stat-label">Calories Today</div></div></div>
+        <div class="stat-card"><div class="stat-icon ic-b">💪</div><div><div class="stat-value" id="ov-prot">—</div><div class="stat-label">Protein (g)</div></div></div>
+        <div class="stat-card"><div class="stat-icon ic-g">🥗</div><div><div class="stat-value" id="ov-meals">0</div><div class="stat-label">Meals Logged</div></div></div>
+        <div class="stat-card"><div class="stat-icon ic-gl">📦</div><div><div class="stat-value" id="ov-orders">0</div><div class="stat-label">Total Orders</div></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card card-body">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-weight:700">Today's Nutrition</div><button class="btn btn-ghost btn-sm" onclick="openLogModal()">+ Log Meal</button></div>
+          <div class="prog-wrap"><div class="prog-meta"><span>Calories</span><span id="cal-txt">Loading...</span></div><div class="prog-track"><div class="prog-fill" id="cal-bar" style="width:0%;background:var(--orange)"></div></div></div>
+          <div class="prog-wrap"><div class="prog-meta"><span>Protein</span><span id="prot-txt">Loading...</span></div><div class="prog-track"><div class="prog-fill" id="prot-bar" style="width:0%;background:var(--blue)"></div></div></div>
+          <div class="prog-wrap"><div class="prog-meta"><span>Carbs</span><span id="carb-txt">Loading...</span></div><div class="prog-track"><div class="prog-fill" id="carb-bar" style="width:0%;background:var(--g700)"></div></div></div>
+          <div class="prog-wrap"><div class="prog-meta"><span>Fat</span><span id="fat-txt">Loading...</span></div><div class="prog-track"><div class="prog-fill" id="fat-bar" style="width:0%;background:var(--gold)"></div></div></div>
+        </div>
+        <div class="card card-body">
+          <div style="font-weight:700;margin-bottom:14px">Quick Actions</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-green btn-block" onclick="showPanel('order',null)">🛒 Order Meals</button>
+            <button class="btn btn-gold btn-block" onclick="openLogModal()">🥗 Log a Meal</button>
+            <button class="btn btn-wa btn-block" onclick="showPanel('chatbot',null)">💬 Chat with NutriBot</button>
+            <button class="btn btn-ghost btn-block" onclick="showPanel('myorders',null)">📦 Track Orders</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDER MEALS -->
+    <div class="panel" id="panel-order">
+      <div class="panel-header"><div><h2 class="panel-title">Order Meals</h2><p class="panel-sub">Choose meals and pay securely via Pesapal</p></div></div>
+      <div class="wz-steps">
+        <div><div class="wz-dot active" id="wd1">1</div><div class="wz-label">Menu</div></div>
+        <div class="wz-line" id="wl1"></div>
+        <div><div class="wz-dot" id="wd2">2</div><div class="wz-label">Cart</div></div>
+        <div class="wz-line" id="wl2"></div>
+        <div><div class="wz-dot" id="wd3">3</div><div class="wz-label">Delivery</div></div>
+        <div class="wz-line" id="wl3"></div>
+        <div><div class="wz-dot" id="wd4">4</div><div class="wz-label">Payment</div></div>
+        <div class="wz-line" id="wl4"></div>
+        <div><div class="wz-dot" id="wd5">5</div><div class="wz-label">Done</div></div>
+      </div>
+      <!-- Step 1 Menu -->
+      <div class="oz active" id="oz1">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">
+          <button class="btn btn-green btn-sm" onclick="filterOM('all',this)">All</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterOM('breakfast',this)">🌅 Breakfast</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterOM('lunch',this)">☀️ Lunch</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterOM('dinner',this)">🌙 Dinner</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterOM('snack',this)">🍎 Snacks</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterOM('vegan',this)">🌿 Vegan</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px" id="om-grid"><div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--mid)">Loading meals...</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:14px;background:#fff;border-radius:var(--r);box-shadow:var(--shadow)">
+          <span id="oz1-count" style="font-size:14px;color:var(--mid)">0 items in cart</span>
+          <button class="btn btn-green" onclick="goWiz(2)">View Cart →</button>
+        </div>
+      </div>
+      <!-- Step 2 Cart -->
+      <div class="oz" id="oz2">
+        <div class="card card-body" style="margin-bottom:16px">
+          <div style="font-weight:700;font-size:16px;margin-bottom:14px">🛒 Your Cart</div>
+          <div id="wiz-cart"></div>
+          <div style="border-top:2px solid #F3F4F6;margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;font-size:15px;font-weight:700"><span>Total</span><span id="wiz-total" style="color:var(--g800)">UGX 0</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between"><button class="btn btn-ghost" onclick="goWiz(1)">← Back</button><button class="btn btn-green" onclick="goWiz(3)">Delivery Info →</button></div>
+      </div>
+      <!-- Step 3 Delivery -->
+      <div class="oz" id="oz3">
+        <div class="card card-body" style="max-width:500px;margin-bottom:16px">
+          <div style="font-weight:700;font-size:16px;margin-bottom:18px">📍 Delivery Details</div>
+          <div class="form-group"><label>Delivery Address *</label><input class="form-control" id="del-addr" placeholder="e.g. Nakasero, Plot 14 Blue Building"></div>
+          <div class="form-group"><label>Phone Number *</label><input class="form-control" type="tel" id="del-phone" placeholder="+256 700 000 000"></div>
+          <div class="form-group"><label>Delivery Time</label><select class="form-control"><option>ASAP (30-45 min)</option><option>Today 12:00 PM</option><option>Today 6:00 PM</option><option>Tomorrow 8:00 AM</option></select></div>
+          <div class="form-group"><label>Special Instructions (optional)</label><textarea class="form-control" rows="2" placeholder="Allergies, spice level, gate code..."></textarea></div>
+        </div>
+        <div style="display:flex;justify-content:space-between"><button class="btn btn-ghost" onclick="goWiz(2)">← Back</button><button class="btn btn-green" onclick="goWiz(4)">Choose Payment →</button></div>
+      </div>
+      <!-- Step 4 Payment -->
+      <div class="oz" id="oz4">
+        <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:18px;max-width:760px">
+          <div class="card card-body">
+            <div style="font-weight:700;font-size:15px;margin-bottom:16px">💳 Payment via Pesapal</div>
+            <div class="pay-method sel" id="pm-pesapal">
+              <span style="font-size:28px">💳</span>
+              <div><div style="font-weight:600">Pesapal Secure Payment</div><div style="font-size:12px;color:var(--mid)">MTN MoMo · Airtel Money · VISA card</div></div>
+              <div class="pay-check">✓</div>
+            </div>
+            <div style="background:var(--g50);border-radius:var(--r-sm);padding:12px;font-size:13px;color:var(--g800);margin-top:8px;line-height:1.6">🔐 You will be redirected to Pesapal's secure page. Choose MTN MoMo, Airtel Money or VISA card to complete payment.</div>
+          </div>
+          <div>
+            <div class="card card-body" style="margin-bottom:12px">
+              <div style="font-weight:700;font-size:14px;margin-bottom:12px">Order Summary</div>
+              <div id="pay-summary"></div>
+              <div style="border-top:1px solid #F3F4F6;padding-top:10px;margin-top:8px">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Subtotal</span><span id="pay-sub">UGX 0</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--g800);margin-bottom:5px"><span>Delivery</span><span>FREE (Pro Plan)</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;border-top:1px solid #F3F4F6;padding-top:8px;margin-top:6px"><span>Total</span><span id="pay-total" style="color:var(--g800)">UGX 0</span></div>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-block" onclick="goWiz(3)" style="margin-bottom:8px">← Back</button>
+            <button class="btn btn-green btn-block btn-lg" onclick="processPayment()" id="pay-btn">💳 Pay Now via Pesapal</button>
+            <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--mid)">🔒 Secured by Pesapal</div>
+          </div>
+        </div>
+      </div>
+      <!-- Step 5 Done -->
+      <div class="oz" id="oz5">
+        <div style="text-align:center;max-width:460px;margin:36px auto">
+          <div style="font-size:72px;margin-bottom:18px">🎉</div>
+          <h2 style="font-family:var(--font-head);font-size:28px;margin-bottom:10px">Order Placed!</h2>
+          <p style="color:#666;line-height:1.7;margin-bottom:20px">You are being redirected to Pesapal to complete payment. After payment, you will get a WhatsApp confirmation from us!</p>
+          <button onclick="showPanel('myorders',null)" class="btn btn-green btn-lg">📦 View My Orders →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEAL TRACKER -->
+    <div class="panel" id="panel-track">
+      <div class="panel-header"><div><h2 class="panel-title">Meal Tracker</h2><p class="panel-sub">Log meals and monitor nutrition</p></div><button class="btn btn-green" onclick="openLogModal()">+ Log Meal</button></div>
+      <div class="card card-body">
+        <div style="font-weight:700;margin-bottom:14px">Today's Log</div>
+        <div id="meal-log-list"><div style="text-align:center;padding:30px;color:var(--mid)">No meals logged yet today.</div></div>
+      </div>
+    </div>
+
+    <!-- MY ORDERS -->
+    <div class="panel" id="panel-myorders">
+      <div class="panel-header"><div><h2 class="panel-title">My Orders</h2><p class="panel-sub">Track all your meal deliveries</p></div><button class="btn btn-green" onclick="showPanel('order',null)">+ New Order</button></div>
+      <div class="card">
+        <div class="table-wrap"><table><thead><tr><th>Order</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody id="orders-tbody"><tr><td colspan="4" style="text-align:center;padding:30px;color:var(--mid)">Loading...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="panel" id="panel-payments">
+      <div class="panel-header"><div><h2 class="panel-title">Payment History</h2><p class="panel-sub">All your transactions</p></div></div>
+      <div class="card">
+        <div class="table-wrap"><table><thead><tr><th>Description</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody id="pay-tbody"><tr><td colspan="4" style="text-align:center;padding:30px;color:var(--mid)">Loading...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- CHATBOT -->
+    <div class="panel" id="panel-chatbot">
+      <div class="panel-header">
+        <div><h2 class="panel-title">NutriBot 🤖</h2><p class="panel-sub">AI nutrition assistant · Connected to WhatsApp</p></div>
+        <a href="https://wa.me/256700123456" target="_blank" class="btn btn-wa">💬 Open WhatsApp</a>
+      </div>
+      <div class="chat-win">
+        <div class="chat-top"><div style="font-size:30px">🥦</div><div><div style="font-weight:700">NutriBot</div><div style="font-size:11px;opacity:.75">🟢 Online · Replies go to WhatsApp too</div></div></div>
+        <div class="chat-msgs" id="chat-msgs"></div>
+        <div class="chat-qrs" id="chat-qrs"></div>
+        <div class="chat-inp-row">
+          <input class="chat-inp" id="chat-inp" placeholder="Ask about meals, nutrition, orders..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="chat-send" onclick="sendMsg()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="panel" id="panel-profile">
+      <div class="panel-header"><div><h2 class="panel-title">My Profile</h2><p class="panel-sub">Personal info and subscription</p></div><button class="btn btn-green" onclick="saveProfile()">💾 Save Changes</button></div>
+      <div class="grid-2" style="margin-bottom:18px">
+        <div class="card card-body">
+          <div style="font-weight:700;margin-bottom:16px">Personal Info</div>
+          <div class="form-row"><div class="form-group"><label>First Name</label><input class="form-control" id="pf-fn"></div><div class="form-group"><label>Last Name</label><input class="form-control" id="pf-ln"></div></div>
+          <div class="form-group"><label>Email</label><input class="form-control" id="pf-em" type="email"></div>
+          <div class="form-group"><label>WhatsApp</label><input class="form-control" id="pf-ph" type="tel"></div>
+          <div class="form-group"><label>Delivery Address</label><input class="form-control" id="pf-addr"></div>
+        </div>
+        <div class="card card-body">
+          <div style="font-weight:700;margin-bottom:16px">Health Profile</div>
+          <div class="form-row"><div class="form-group"><label>Age</label><input class="form-control" type="number" id="pf-age"></div><div class="form-group"><label>Gender</label><select class="form-control" id="pf-gender"><option>Male</option><option>Female</option><option>Other</option></select></div></div>
+          <div class="form-row"><div class="form-group"><label>Weight (kg)</label><input class="form-control" type="number" id="pf-wt"></div><div class="form-group"><label>Height (cm)</label><input class="form-control" type="number" id="pf-ht"></div></div>
+          <div class="form-group"><label>Health Goal</label><select class="form-control" id="pf-goal"><option>Weight Loss</option><option>Muscle Gain</option><option>Healthy Eating</option><option>Manage Diabetes</option><option>General Wellness</option></select></div>
+        </div>
+      </div>
+      <div class="card card-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+          <div><div style="font-weight:700;font-size:16px">Current Plan: <span style="color:var(--g800)" id="pf-plan-name">Loading...</span></div><div style="font-size:13px;color:var(--mid);margin-top:3px">Renews next billing cycle</div></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-gold" onclick="location.href='plans.html'">Upgrade Plan</button>
+            <button class="btn btn-red" onclick="showToast('Contact support: support@nutrilife.ug','warning')">Cancel Plan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- LOG MEAL MODAL -->
+<div class="modal-overlay" id="log-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">🥗 Log a Meal</div><button class="modal-close" onclick="document.getElementById('log-modal').classList.remove('open')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Meal Type</label><select class="form-control" id="log-type"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></div>
+      <div class="form-group"><label>Meal Name *</label><input class="form-control" id="log-name" placeholder="e.g. Grilled Chicken Rice"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Calories (kcal) *</label><input class="form-control" type="number" id="log-cal" placeholder="0"></div>
+        <div class="form-group"><label>Protein (g)</label><input class="form-control" type="number" id="log-prot" placeholder="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Carbs (g)</label><input class="form-control" type="number" id="log-carb" placeholder="0"></div>
+        <div class="form-group"><label>Fat (g)</label><input class="form-control" type="number" id="log-fat" placeholder="0"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="document.getElementById('log-modal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-green" onclick="saveMealLog()">✓ Log Meal</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+if(!Auth.isLoggedIn()) location.href='login.html';
+const user=Auth.getUser();
+const GOALS={calories:2000,protein:120,carbs:250,fat:70};
+let allMeals=[];
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if(user){
+    const ini=(user.firstName?.[0]||'')+(user.lastName?.[0]||'');
+    document.getElementById('sb-av').textContent=ini||'U';
+    document.getElementById('sb-name').textContent=`${user.firstName||''} ${user.lastName||''}`;
+    document.getElementById('sb-plan').textContent=`⭐ ${user.plan||'Pro'} Plan`;
+    document.getElementById('nav-hi').textContent=`Hi, ${user.firstName}!`;
+    document.getElementById('pf-plan-name').textContent=`⭐ ${user.plan||'Pro'}`;
+    const h=new Date().getHours();
+    const g=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
+    document.getElementById('greeting').textContent=`${g}, ${user.firstName} 👋`;
+  }
+  loadNutrition();loadOrders();loadPayments();loadOMeals();initChat();Cart.updateBadge();
+});
+
+function showPanel(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id)?.classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(l=>l.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(id==='track') loadMealLog();
+  if(id==='profile') loadProfile();
+}
+
+async function loadNutrition(){
+  try{
+    const{logs,totals}=await Tracker.getLogs('today');
+    document.getElementById('ov-cal').textContent=totals.calories;
+    document.getElementById('ov-prot').textContent=totals.protein+'g';
+    document.getElementById('ov-meals').textContent=logs.length;
+    const bars=[['cal','calories',totals.calories,'kcal',var_='var(--orange)'],['prot','protein',totals.protein,'g','var(--blue)'],['carb','carbs',totals.carbs,'g','var(--g700)'],['fat','fat',totals.fat,'g','var(--gold)']];
+    bars.forEach(([k,gk,v,u,c])=>{
+      const goal=GOALS[gk];
+      document.getElementById(k+'-txt').textContent=`${v} / ${goal}${u}`;
+      document.getElementById(k+'-bar').style.width=Math.min(100,(v/goal)*100)+'%';
+      document.getElementById(k+'-bar').style.background=c;
+    });
+  }catch(e){console.log('Nutrition error:',e.message);}
+}
+
+async function loadMealLog(){
+  const el=document.getElementById('meal-log-list');
+  try{
+    const{logs}=await Tracker.getLogs('today');
+    if(!logs.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--mid)">No meals logged today. Click + Log Meal to start.</div>';return;}
+    el.innerHTML=logs.map(l=>`
+      <div class="ml-item">
+        <div class="ml-emoji">🍽️</div>
+        <div style="flex:1"><div style="font-weight:600;font-size:14px">${l.mealName}</div><div style="font-size:12px;color:var(--mid)">${l.mealType} · ${new Date(l.loggedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>
+        <div style="font-size:14px;font-weight:600;color:var(--orange)">${l.calories} kcal</div>
+        <button onclick="deleteLog('${l.id}')" style="border:none;background:none;cursor:pointer;font-size:16px;color:var(--mid);margin-left:8px">🗑</button>
+      </div>`).join('');
+  }catch(e){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--mid)">Could not load meal log.</div>';}
+}
+
+function openLogModal(){document.getElementById('log-modal').classList.add('open');}
+async function saveMealLog(){
+  const name=document.getElementById('log-name').value.trim(),cal=document.getElementById('log-cal').value;
+  if(!name||!cal){showToast('Please enter meal name and calories','error');return;}
+  try{
+    await Tracker.logMeal({mealName:name,mealType:document.getElementById('log-type').value,calories:parseInt(cal),protein:parseFloat(document.getElementById('log-prot').value)||0,carbs:parseFloat(document.getElementById('log-carb').value)||0,fat:parseFloat(document.getElementById('log-fat').value)||0});
+    document.getElementById('log-modal').classList.remove('open');
+    showToast('Meal logged! 🥗','success');
+    loadNutrition();loadMealLog();
+    ['log-name','log-cal','log-prot','log-carb','log-fat'].forEach(id=>document.getElementById(id).value='');
+  }catch(e){showToast(e.message,'error');}
+}
+async function deleteLog(id){
+  try{await Tracker.deleteLog(id);showToast('Meal removed','success');loadMealLog();loadNutrition();}
+  catch(e){showToast(e.message,'error');}
+}
+
+async function loadOrders(){
+  const tb=document.getElementById('orders-tbody');
+  try{
+    const orders=await Orders.getMine();
+    document.getElementById('ov-orders').textContent=orders.length;
+    if(!orders.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--mid)">No orders yet.</td></tr>';return;}
+    tb.innerHTML=orders.map(o=>`<tr><td><strong>${o.orderNumber}</strong></td><td style="font-weight:600">UGX ${o.totalAmount.toLocaleString()}</td><td style="color:var(--mid)">${fmtDate(o.createdAt)}</td><td>${statusBadge(o.status)}</td></tr>`).join('');
+  }catch(e){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--mid)">Could not load orders.</td></tr>';}
+}
+
+async function loadPayments(){
+  const tb=document.getElementById('pay-tbody');
+  try{
+    const pays=await Payments.getHistory();
+    if(!pays.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--mid)">No transactions yet.</td></tr>';return;}
+    tb.innerHTML=pays.map(p=>`<tr><td>${p.description||'Payment'}</td><td style="font-weight:600">UGX ${p.amount.toLocaleString()}</td><td style="color:var(--mid)">${fmtDate(p.createdAt)}</td><td>${statusBadge(p.status)}</td></tr>`).join('');
+  }catch(e){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--mid)">Could not load payments.</td></tr>';}
+}
+
+async function loadOMeals(){
+  try{allMeals=await Meals.getAll();renderOM(allMeals);}
+  catch(e){document.getElementById('om-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--mid)">Could not load meals.</div>';}
+}
+function renderOM(meals){
+  const g=document.getElementById('om-grid');
+  if(!meals.length){g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--mid)">No meals found.</div>';return;}
+  g.innerHTML=meals.map(m=>`
+    <div class="omc">
+      <div class="omc-img" style="background:${CAT_BG[m.category]||'#F3F4F6'}">${m.emoji}</div>
+      <div class="omc-body">
+        <div class="omc-name">${m.name}</div>
+        <div class="omc-macros"><span class="pill p-cal">${m.calories}kcal</span><span class="pill p-prot">${m.protein}g P</span></div>
+        <div class="omc-foot"><div class="omc-price">UGX ${m.price.toLocaleString()}</div><button class="add-btn" onclick='Cart.add(${JSON.stringify({id:m.id,name:m.name,emoji:m.emoji,price:m.price,calories:m.calories,protein:m.protein})});updateOz1()'>+ Add</button></div>
+      </div>
+    </div>`).join('');
+}
+function filterOM(cat,btn){
+  document.querySelectorAll('#oz1 .btn-sm').forEach(b=>{b.className='btn btn-ghost btn-sm';});
+  btn.className='btn btn-green btn-sm';
+  renderOM(cat==='all'?allMeals:allMeals.filter(m=>m.category===cat));
+}
+function updateOz1(){const c=Cart.count();document.getElementById('oz1-count').textContent=`${c} item${c!==1?'s':''} in cart`;Cart.updateBadge();}
+
+function goWiz(n){
+  if(n===2&&Cart.count()===0){showToast('Add at least one meal first','error');return;}
+  for(let i=1;i<=5;i++){
+    document.getElementById('oz'+i).classList.toggle('active',i===n);
+    const d=document.getElementById('wd'+i),l=document.getElementById('wl'+i);
+    d.className='wz-dot'+(i<n?' done':i===n?' active':'');
+    d.textContent=i<n?'✓':i;
+    if(l) l.className='wz-line'+(i<n?' done':'');
+  }
+  if(n===2) renderWizCart();
+  if(n===4) renderPaySummary();
+}
+function renderWizCart(){
+  const cart=Cart.get(),total=Cart.total();
+  document.getElementById('wiz-total').textContent='UGX '+total.toLocaleString();
+  if(!cart.length){document.getElementById('wiz-cart').innerHTML='<div style="text-align:center;padding:20px;color:var(--mid)">Cart is empty.</div>';return;}
+  document.getElementById('wiz-cart').innerHTML=cart.map(c=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F3F4F6">
+      <div style="font-size:26px">${c.emoji}</div>
+      <div style="flex:1"><div style="font-weight:600;font-size:14px">${c.name}</div><div style="font-size:12px;color:var(--mid)">UGX ${c.price.toLocaleString()} each</div></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button onclick="Cart.changeQty('${c.id}',-1);renderWizCart()" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--light);background:#fff;cursor:pointer">−</button>
+        <span style="font-weight:700">${c.qty}</span>
+        <button onclick="Cart.changeQty('${c.id}',1);renderWizCart()" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--light);background:#fff;cursor:pointer">+</button>
+      </div>
+      <div style="font-weight:600;min-width:90px;text-align:right">UGX ${(c.price*c.qty).toLocaleString()}</div>
+      <button onclick="Cart.remove('${c.id}');renderWizCart()" style="border:none;background:none;cursor:pointer;font-size:18px;color:var(--mid)">🗑</button>
+    </div>`).join('');
+}
+function renderPaySummary(){
+  const cart=Cart.get(),total=Cart.total();
+  document.getElementById('pay-sub').textContent='UGX '+total.toLocaleString();
+  document.getElementById('pay-total').textContent='UGX '+total.toLocaleString();
+  document.getElementById('pay-summary').innerHTML=cart.map(c=>`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>${c.emoji} ${c.name} ×${c.qty}</span><span>UGX ${(c.price*c.qty).toLocaleString()}</span></div>`).join('');
+}
+async function processPayment(){
+  const addr=document.getElementById('del-addr').value.trim(),phone=document.getElementById('del-phone').value.trim();
+  if(!addr||!phone){showToast('Please complete delivery details','error');goWiz(3);return;}
+  const btn=document.getElementById('pay-btn');
+  btn.innerHTML='<span class="spinner"></span> Processing...';btn.disabled=true;
+  try{
+    const order=await Orders.create({items:Cart.get().map(c=>({mealId:c.id,quantity:c.qty})),deliveryAddress:addr,deliveryPhone:phone});
+    const payment=await Payments.initiate(order.orderId);
+    Cart.clear();
+    showToast('Redirecting to Pesapal payment...','success');
+    setTimeout(()=>window.location.href=payment.redirectUrl,1000);
+  }catch(e){showToast(e.message,'error');btn.innerHTML='💳 Pay Now via Pesapal';btn.disabled=false;}
+}
+
+async function loadProfile(){
+  try{
+    const u=await Users.getMe();
+    document.getElementById('pf-fn').value=u.firstName||'';
+    document.getElementById('pf-ln').value=u.lastName||'';
+    document.getElementById('pf-em').value=u.email||'';
+    document.getElementById('pf-ph').value=u.phone||'';
+    document.getElementById('pf-addr').value=u.address||'';
+    document.getElementById('pf-age').value=u.age||'';
+    document.getElementById('pf-wt').value=u.weight||'';
+    document.getElementById('pf-ht').value=u.height||'';
+    if(u.goal) document.getElementById('pf-goal').value=u.goal;
+  }catch(e){}
+}
+async function saveProfile(){
+  try{
+    await Users.updateProfile({firstName:document.getElementById('pf-fn').value,lastName:document.getElementById('pf-ln').value,phone:document.getElementById('pf-ph').value,address:document.getElementById('pf-addr').value,age:document.getElementById('pf-age').value,weight:document.getElementById('pf-wt').value,height:document.getElementById('pf-ht').value,goal:document.getElementById('pf-goal').value});
+    showToast('Profile updated ✅','success');
+  }catch(e){showToast(e.message,'error');}
+}
+
+// CHATBOT
+const BOT={
+  'hi|hello|hey':['Hi there! 👋 I\'m NutriBot. How can I help you today?','Hello! Ready to help with meals, nutrition or orders!'],
+  'menu|food|meal':['Browse our full menu in "Order Meals" → we have breakfast, lunch, dinner, snacks and vegan options! 🥗'],
+  'order':['Click "Order Meals" in the sidebar. Choose meals, add delivery details and pay via Pesapal! 🛒'],
+  'pay|pesapal':['We use Pesapal which supports MTN Mobile Money, Airtel Money and VISA/Mastercard. All payments are secure! 💳'],
+  'track|delivery|deliver':['Check "My Orders" in the sidebar to track your orders. You will also get WhatsApp updates! 📦'],
+  'calori|protein|nutrition|macro':['Track your daily nutrition in the "Meal Tracker" section. Log every meal to see your progress! 📊'],
+  'plan|subscri':['You are on the '+( user?.plan||'Pro')+' plan. Go to My Profile to upgrade or manage your subscription. ⭐'],
+  'whatsapp|contact|support':['Our WhatsApp: +256 700 123 456. Click "Open WhatsApp" above to chat directly! 💬'],
+};
+function initChat(){
+  addBotMsg('Hi '+(user?.firstName||'there')+'! 👋 I\'m NutriBot, your personal nutrition assistant. How can I help you today?');
+  renderQRs(['🥗 View menu','💳 How to pay','📦 Track order','📊 Nutrition tips','💬 WhatsApp us']);
+}
+function addBotMsg(t){const m=document.getElementById('chat-msgs');if(!m)return;const d=document.createElement('div');d.className='cm bot';d.innerHTML=`<div class="cm-bubble">${t}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function addUserMsg(t){const m=document.getElementById('chat-msgs');if(!m)return;const d=document.createElement('div');d.className='cm user';d.innerHTML=`<div class="cm-bubble">${t}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function sendMsg(preset){
+  const inp=document.getElementById('chat-inp');
+  const msg=preset||(inp?inp.value.trim():'');
+  if(!msg)return;
+  addUserMsg(msg);if(inp)inp.value='';
+  document.getElementById('chat-qrs').innerHTML='';
+  setTimeout(()=>{
+    const lower=msg.toLowerCase();let reply='I\'m not sure about that. Try: MENU · PAY · TRACK · HELP 😊';
+    for(const[keys,responses] of Object.entries(BOT)){if(keys.split('|').some(k=>lower.includes(k))){reply=Array.isArray(responses)?responses[Math.floor(Math.random()*responses.length)]:responses;break;}}
+    addBotMsg(reply);
+    renderQRs(['🥗 Menu','💳 Pay','📦 Orders','📊 Nutrition']);
+  },500);
+}
+function renderQRs(items){const el=document.getElementById('chat-qrs');if(el)el.innerHTML=items.map(r=>`<button class="qr" onclick="sendMsg('${r}')">${r}</button>`).join('');}
+</script>
+</body>
+</html>

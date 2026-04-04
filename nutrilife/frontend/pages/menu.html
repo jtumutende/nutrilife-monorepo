@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Our Menu — NutriLife Uganda</title>
+<link rel="stylesheet" href="../css/global.css">
+<style>
+.menu-hero{background:linear-gradient(135deg,var(--g800),#1B4332);color:#fff;padding:52px 48px;position:relative;overflow:hidden}
+.menu-hero::after{content:'🥗';position:absolute;right:80px;top:-20px;font-size:200px;opacity:.07}
+.mh-tag{font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.5);margin-bottom:10px}
+.mh-title{font-family:var(--font-head);font-size:clamp(28px,5vw,48px);font-weight:900;margin-bottom:10px}
+.mh-sub{font-size:15px;opacity:.75;max-width:480px;line-height:1.65}
+.filter-bar{background:#fff;border-bottom:1px solid rgba(45,106,79,.1);padding:14px 48px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:var(--nav-h);z-index:100}
+.fb{padding:7px 18px;border-radius:24px;font-size:13px;font-weight:600;border:1.5px solid var(--light);background:#fff;cursor:pointer;transition:all .2s;font-family:var(--font-body);color:var(--mid)}
+.fb:hover{border-color:var(--g800);color:var(--g800)}
+.fb.active{background:var(--g800);color:#fff;border-color:var(--g800)}
+.search-area{margin-left:auto;display:flex;align-items:center;gap:8px}
+.search-inp{padding:8px 16px;border:1.5px solid var(--light);border-radius:24px;font-size:13px;outline:none;min-width:200px;font-family:var(--font-body);transition:border-color .2s}
+.search-inp:focus{border-color:var(--g700)}
+.sort-sel{padding:8px 12px;border:1.5px solid var(--light);border-radius:var(--r-sm);font-size:13px;outline:none;cursor:pointer;font-family:var(--font-body)}
+.main-wrap{padding:36px 48px}
+.section-hd{font-family:var(--font-head);font-size:22px;font-weight:700;margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.section-hd .count{font-family:var(--font-body);font-size:13px;color:var(--mid);font-weight:500}
+.meals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:48px}
+.mc{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column}
+.mc:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.mc-img{height:155px;display:flex;align-items:center;justify-content:center;font-size:70px;position:relative}
+.mc-unavail{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:13px}
+.mc-body{padding:16px 18px;flex:1;display:flex;flex-direction:column}
+.mc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.mc-name{font-family:var(--font-head);font-size:15px;font-weight:700;line-height:1.3}
+.mc-desc{font-size:12px;color:var(--mid);line-height:1.55;margin-bottom:10px;flex:1}
+.mc-macros{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.pill{padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.p-cal{background:#FEF3C7;color:#92400E}.p-prot{background:#DBEAFE;color:#1E40AF}.p-carb{background:#D1FAE5;color:#065F46}.p-fat{background:#FEE2E2;color:#991B1B}
+.mc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+.mc-price{font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--g800)}
+.mc-actions{display:flex;gap:6px}
+.mc-btn{padding:7px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.mc-btn-info{background:var(--cream);color:var(--g800)}
+.mc-btn-add{background:var(--g800);color:#fff}
+.mc-btn-add:hover{background:var(--g700)}
+/* Cart FAB */
+.cart-fab{position:fixed;bottom:32px;right:32px;z-index:300;background:var(--g800);color:#fff;border:none;border-radius:50px;padding:14px 24px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 8px 24px rgba(45,106,79,.4);transition:all .2s;font-family:var(--font-body);display:flex;align-items:center;gap:8px}
+.cart-fab:hover{background:var(--g700);transform:translateY(-2px)}
+/* Cart sidebar */
+.cart-side{position:fixed;right:-420px;top:var(--nav-h);width:400px;height:calc(100vh - var(--nav-h));background:#fff;box-shadow:-8px 0 40px rgba(0,0,0,.1);z-index:400;display:flex;flex-direction:column;transition:right .35s cubic-bezier(.4,0,.2,1)}
+.cart-side.open{right:0}
+.cart-top{padding:20px 22px;border-bottom:1px solid var(--light);display:flex;justify-content:space-between;align-items:center}
+.cart-title{font-family:var(--font-head);font-size:20px;font-weight:700}
+.cart-x{width:32px;height:32px;border-radius:50%;border:none;background:#f0f0f0;cursor:pointer;font-size:16px}
+.cart-items{flex:1;overflow-y:auto;padding:14px 20px}
+.ci{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #F3F4F6}
+.ci-emoji{font-size:26px;width:44px;height:44px;background:var(--cream);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ci-name{font-weight:600;font-size:14px}
+.ci-price{font-size:12px;color:var(--mid)}
+.ci-qty{display:flex;align-items:center;gap:7px}
+.qty-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--light);background:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.qty-btn:hover{border-color:var(--g800);color:var(--g800)}
+.qty-val{font-weight:700;min-width:20px;text-align:center;font-size:14px}
+.cart-btm{padding:18px 20px;border-top:1px solid var(--light)}
+.cart-total-row{display:flex;justify-content:space-between;font-size:15px;font-weight:700;margin-bottom:14px}
+.cart-empty{text-align:center;color:var(--mid);padding:40px 20px;font-size:14px;line-height:1.7}
+/* Detail modal */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(26,26,46,.65);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:24px;width:100%;max-width:500px;box-shadow:0 32px 80px rgba(0,0,0,.2);animation:mIn .3s ease;max-height:90vh;overflow-y:auto}
+@keyframes mIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@media(max-width:1000px){.meals-grid{grid-template-columns:repeat(2,1fr)}.menu-hero,.main-wrap,.filter-bar{padding-left:24px;padding-right:24px}.search-area{display:none}.cart-side{width:340px}}
+@media(max-width:600px){.meals-grid{grid-template-columns:1fr}.cart-side{width:100%}}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+<nav class="main-nav">
+  <div class="nav-logo" onclick="location.href='../index.html'">🥗 Nutri<span class="accent">Life</span></div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="location.href='login.html'">Login</button>
+    <button class="nav-link solid" onclick="location.href='register.html'">Get Started</button>
+  </div>
+</nav>
+
+<div class="menu-hero">
+  <div class="mh-tag">Chef-Prepared · Nutritionist-Approved</div>
+  <div class="mh-title">Our Menu</div>
+  <p class="mh-sub">Fresh meals delivered across Kampala. Filter by category, dietary need or nutrition goals.</p>
+</div>
+
+<div class="filter-bar">
+  <button class="fb active" onclick="filterMeals('all',this)">All Meals</button>
+  <button class="fb" onclick="filterMeals('breakfast',this)">🌅 Breakfast</button>
+  <button class="fb" onclick="filterMeals('lunch',this)">☀️ Lunch</button>
+  <button class="fb" onclick="filterMeals('dinner',this)">🌙 Dinner</button>
+  <button class="fb" onclick="filterMeals('snack',this)">🍎 Snacks</button>
+  <button class="fb" onclick="filterMeals('vegan',this)">🌿 Vegan</button>
+  <div class="search-area">
+    <input class="search-inp" type="text" placeholder="🔍 Search meals..." oninput="searchMeals(this.value)">
+    <select class="sort-sel" onchange="sortMeals(this.value)">
+      <option value="">Sort by</option>
+      <option value="price-asc">Price: Low → High</option>
+      <option value="price-desc">Price: High → Low</option>
+      <option value="cal-asc">Calories: Low → High</option>
+      <option value="prot-desc">Highest Protein</option>
+    </select>
+  </div>
+</div>
+
+<main class="main-wrap">
+  <div class="section-hd"><span id="cat-label">All Meals</span><span class="count" id="meal-count"></span></div>
+  <div class="meals-grid" id="meals-grid"><div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--mid)">Loading meals...</div></div>
+</main>
+
+<button class="cart-fab" onclick="toggleCart()">
+  🛒 Cart <span class="cart-badge" style="background:var(--orange);color:#fff;width:22px;height:22px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">0</span>
+</button>
+
+<div class="cart-side" id="cart-side">
+  <div class="cart-top">
+    <div class="cart-title">🛒 Your Cart</div>
+    <button class="cart-x" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-btm">
+    <div class="cart-total-row"><span>Total</span><span id="cart-total">UGX 0</span></div>
+    <button onclick="checkout()" style="width:100%;padding:14px;background:var(--g800);color:#fff;border:none;border-radius:var(--r-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:background .2s" onmouseover="this.style.background='var(--g700)'" onmouseout="this.style.background='var(--g800)'">Checkout & Pay →</button>
+    <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--mid)">💳 MTN MoMo · Airtel · VISA via Pesapal</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" id="detail-inner"></div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+let allMeals=[], currentFilter='all', currentSearch='';
+
+async function init(){
+  try{
+    allMeals=await Meals.getAll();
+    renderGrid(allMeals);
+  }catch(e){
+    document.getElementById('meals-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--mid)">⚠️ Could not load meals. Please start the backend server.<br><small>cd backend && npm run dev</small></div>';
+  }
+  renderCart();
+}
+
+function renderGrid(meals){
+  document.getElementById('meal-count').textContent=`(${meals.length} meals)`;
+  const g=document.getElementById('meals-grid');
+  if(!meals.length){g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--mid)">No meals found.</div>';return;}
+  g.innerHTML=meals.map(m=>`
+    <div class="mc">
+      <div class="mc-img" style="background:${CAT_BG[m.category]||'#F3F4F6'}">
+        ${m.emoji}
+        ${m.isAvailable?'':'<div class="mc-unavail">Out of Stock</div>'}
+      </div>
+      <div class="mc-body">
+        <div class="mc-top">
+          <div class="mc-name">${m.name}</div>
+          <span class="badge badge-green" style="flex-shrink:0;font-size:10px">${m.category}</span>
+        </div>
+        <p class="mc-desc">${m.description||''}</p>
+        <div class="mc-macros">
+          <span class="pill p-cal">${m.calories}kcal</span>
+          <span class="pill p-prot">${m.protein}g P</span>
+          <span class="pill p-carb">${m.carbs}g C</span>
+          <span class="pill p-fat">${m.fat}g F</span>
+        </div>
+        <div class="mc-foot">
+          <div class="mc-price">UGX ${m.price.toLocaleString()}</div>
+          <div class="mc-actions">
+            <button class="mc-btn mc-btn-info" onclick="openDetail(${JSON.stringify(m).replace(/"/g,'&quot;')})">Details</button>
+            ${m.isAvailable
+              ? `<button class="mc-btn mc-btn-add" onclick="Cart.add(${JSON.stringify({id:m.id,name:m.name,emoji:m.emoji,price:m.price,calories:m.calories,protein:m.protein}).replace(/"/g,'&quot;')});renderCart()">+ Add</button>`
+              : `<button class="mc-btn" style="background:#E5E7EB;color:var(--mid);cursor:not-allowed" disabled>Unavailable</button>`
+            }
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function filterMeals(cat, btn){
+  currentFilter=cat;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const labels={all:'All Meals',breakfast:'🌅 Breakfast',lunch:'☀️ Lunch',dinner:'🌙 Dinner',snack:'🍎 Snacks',vegan:'🌿 Vegan'};
+  document.getElementById('cat-label').textContent=labels[cat]||cat;
+  applyFilters();
+}
+
+function searchMeals(val){ currentSearch=val; applyFilters(); }
+
+function applyFilters(){
+  let list=allMeals;
+  if(currentFilter!=='all') list=list.filter(m=>m.category===currentFilter);
+  if(currentSearch) list=list.filter(m=>m.name.toLowerCase().includes(currentSearch.toLowerCase()));
+  renderGrid(list);
+}
+
+function sortMeals(v){
+  const s={'price-asc':(a,b)=>a.price-b.price,'price-desc':(a,b)=>b.price-a.price,'cal-asc':(a,b)=>a.calories-b.calories,'prot-desc':(a,b)=>b.protein-a.protein};
+  if(s[v]) allMeals=[...allMeals].sort(s[v]);
+  applyFilters();
+}
+
+function renderCart(){
+  const cart=Cart.get(), total=Cart.total();
+  Cart.updateBadge();
+  document.getElementById('cart-total').textContent='UGX '+total.toLocaleString();
+  const el=document.getElementById('cart-items');
+  if(!cart.length){el.innerHTML='<div class="cart-empty">🛒<br><br>Your cart is empty.<br>Add meals from the menu!</div>';return;}
+  el.innerHTML=cart.map(c=>`
+    <div class="ci">
+      <div class="ci-emoji">${c.emoji}</div>
+      <div style="flex:1"><div class="ci-name">${c.name}</div><div class="ci-price">UGX ${(c.price*c.qty).toLocaleString()}</div></div>
+      <div class="ci-qty">
+        <button class="qty-btn" onclick="Cart.changeQty('${c.id}',-1);renderCart()">−</button>
+        <span class="qty-val">${c.qty}</span>
+        <button class="qty-btn" onclick="Cart.changeQty('${c.id}',1);renderCart()">+</button>
+      </div>
+      <button onclick="Cart.remove('${c.id}');renderCart()" style="border:none;background:none;cursor:pointer;font-size:18px;color:var(--mid);margin-left:6px">🗑</button>
+    </div>`).join('');
+}
+
+function toggleCart(){ document.getElementById('cart-side').classList.toggle('open'); }
+
+function checkout(){
+  if(Cart.count()===0){showToast('Add meals to your cart first!','error');return;}
+  if(!Auth.isLoggedIn()){location.href='login.html';return;}
+  sessionStorage.setItem('nl_cart_bk', localStorage.getItem('nl_cart')||'[]');
+  location.href='dashboard.html';
+}
+
+function openDetail(m){
+  document.getElementById('detail-inner').innerHTML=`
+    <div style="padding:28px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+        <div style="font-size:60px">${m.emoji}</div>
+        <button onclick="document.getElementById('detail-modal').classList.remove('open')" style="width:32px;height:32px;border-radius:50%;border:none;background:#f0f0f0;cursor:pointer;font-size:15px;color:var(--mid)">✕</button>
+      </div>
+      <h2 style="font-family:var(--font-head);font-size:24px;font-weight:700;margin-bottom:8px">${m.name}</h2>
+      <span class="badge badge-green" style="margin-bottom:14px;display:inline-flex">${m.category}</span>
+      <p style="font-size:14px;color:#555;line-height:1.7;margin-bottom:20px">${m.description||'A delicious, nutritionist-approved meal prepared fresh by our chefs.'}</p>
+      <div style="background:var(--cream);border-radius:var(--r-sm);padding:16px;margin-bottom:20px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:12px">Nutrition Facts</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          ${[['🔥 Calories',m.calories,'kcal'],['💪 Protein',m.protein,'g'],['🌾 Carbs',m.carbs,'g'],['🥑 Fat',m.fat,'g'],['🌿 Fiber',m.fiber||0,'g']].map(([l,v,u])=>`<div style="background:#fff;padding:10px;border-radius:var(--r-sm);text-align:center"><div style="font-size:16px">${l.split(' ')[0]}</div><div style="font-family:var(--font-head);font-size:20px;font-weight:700;margin:3px 0">${v}${u}</div><div style="font-size:10px;color:var(--mid)">${l.split(' ').slice(1).join(' ')}</div></div>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-head);font-size:26px;font-weight:900;color:var(--g800)">UGX ${m.price.toLocaleString()}</div>
+        ${m.isAvailable
+          ? `<button onclick="Cart.add(${JSON.stringify({id:m.id,name:m.name,emoji:m.emoji,price:m.price,calories:m.calories,protein:m.protein}).replace(/"/g,'&quot;')});renderCart();document.getElementById('detail-modal').classList.remove('open')" style="padding:12px 24px;background:var(--g800);color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font-body)">+ Add to Cart</button>`
+          : `<span style="color:var(--mid);font-size:14px">Currently unavailable</span>`
+        }
+      </div>
+    </div>`;
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+init();
+</script>
+</body>
+</html>

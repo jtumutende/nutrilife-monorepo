@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Payment Confirmation — NutriLife</title>
+<link rel="stylesheet" href="../css/global.css">
+<style>
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--cream);padding:20px}
+.box{background:#fff;border-radius:24px;padding:48px;width:100%;max-width:480px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.12)}
+.spin-lg{width:48px;height:48px;border:4px solid rgba(45,106,79,.2);border-top-color:var(--g800);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.detail-row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #F3F4F6}
+.detail-row:last-child{border:none;font-weight:700;font-size:15px}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+<div class="box" id="box">
+  <div class="spin-lg"></div>
+  <h2 style="font-family:var(--font-head);font-size:26px;margin-bottom:10px">Checking Payment...</h2>
+  <p style="color:var(--mid);font-size:14px;line-height:1.6">Please wait while we verify your payment with Pesapal.</p>
+</div>
+<script src="../js/api.js"></script>
+<script>
+const params=new URLSearchParams(location.search);
+const trackId=params.get('orderTrackingId')||params.get('OrderTrackingId');
+async function check(){
+  if(!trackId){showError();return;}
+  let attempts=0;
+  const poll=async()=>{
+    attempts++;
+    try{
+      const r=await Payments.checkStatus(trackId);
+      if(r.status==='SUCCESS') showSuccess(r);
+      else if(r.status==='FAILED') showError();
+      else if(attempts<10) setTimeout(poll,3000);
+      else showPending();
+    }catch(e){if(attempts<5)setTimeout(poll,3000);else showPending();}
+  };
+  poll();
+}
+function showSuccess(d){
+  document.getElementById('box').innerHTML=`
+    <div style="font-size:72px;margin-bottom:18px">🎉</div>
+    <h2 style="font-family:var(--font-head);font-size:28px;margin-bottom:10px">Payment Successful!</h2>
+    <p style="color:var(--mid);margin-bottom:24px;font-size:14px;line-height:1.6">Your order is confirmed! Our chefs are preparing your food right now.</p>
+    <div style="background:var(--cream);border-radius:var(--r-sm);padding:16px;margin-bottom:24px;text-align:left">
+      <div class="detail-row"><span>Order Number</span><span>${d?.orderNumber||'—'}</span></div>
+      <div class="detail-row"><span>Amount Paid</span><span style="color:var(--g800)">UGX ${d?.amount?.toLocaleString()||'—'}</span></div>
+      <div class="detail-row"><span>Status</span><span class="badge badge-green">✅ Confirmed</span></div>
+      <div class="detail-row"><span>Estimated Delivery</span><span>30 – 45 minutes</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="dashboard.html" class="btn btn-green btn-block btn-lg">📦 Track My Order</a>
+      <a href="https://wa.me/256700123456" target="_blank" class="btn btn-wa btn-block">💬 WhatsApp Updates</a>
+    </div>`;
+}
+function showError(){
+  document.getElementById('box').innerHTML=`
+    <div style="font-size:72px;margin-bottom:18px">❌</div>
+    <h2 style="font-family:var(--font-head);font-size:28px;margin-bottom:10px">Payment Failed</h2>
+    <p style="color:var(--mid);margin-bottom:24px;font-size:14px;line-height:1.6">Your payment was not completed. No money was charged. Please try again.</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="dashboard.html" class="btn btn-green btn-block btn-lg">🔄 Try Again</a>
+      <a href="https://wa.me/256700123456" target="_blank" class="btn btn-wa btn-block">💬 Get Help</a>
+    </div>`;
+}
+function showPending(){
+  document.getElementById('box').innerHTML=`
+    <div style="font-size:72px;margin-bottom:18px">⏳</div>
+    <h2 style="font-family:var(--font-head);font-size:28px;margin-bottom:10px">Payment Pending</h2>
+    <p style="color:var(--mid);margin-bottom:24px;font-size:14px;line-height:1.6">Your payment is being processed. If you approved the prompt on your phone, it will be confirmed shortly.</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="dashboard.html" class="btn btn-green btn-block btn-lg">📦 View My Orders</a>
+      <a href="https://wa.me/256700123456" target="_blank" class="btn btn-wa btn-block">💬 Contact Support</a>
+    </div>`;
+}
+check();
+</script>
+</body>
+</html>
