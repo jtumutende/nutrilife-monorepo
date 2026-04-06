@@ -5,7 +5,7 @@
 
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:4000/api'
-  : 'https://nutrilife-backend.onrender.com/api';  // ← change after Render deploy
+  : 'https://nutrilife-monorepo.onrender.com/api';  // ← change after Render deploy
 
 /* ── Fetch wrapper */
 async function api(endpoint, options = {}) {
